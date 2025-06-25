@@ -1,0 +1,144 @@
+/* Main Container */
+.recordsContainer {
+    position: relative;
+    width: 100%;
+    /* min-height: 60vh; */
+    background: var(--rv-secondary);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap:20px;
+    align-items: center;
+    overflow: hidden;
+    /* margin: 100px 0px; */
+    padding: 50px 0px;
+}
+
+/* Text Content */
+.textContent {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.heading {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: white;
+    line-height: 1.2;
+}
+
+/* Stats Container */
+.statsContainer {
+    display: flex;
+    justify-content: center;
+    gap: 7rem;
+    flex-wrap: wrap;
+    padding: 20px;
+}
+
+/* Individual Stat */
+.stat {
+    text-align: center;
+    z-index: 1;
+}
+
+.number {
+    font-size: 60px;
+    font-weight: 650;
+    color: white;
+    margin-bottom: 0.5rem;
+}
+
+.label {
+    /* font-size: 1.6rem; */
+    color: white;
+}
+
+Background Dots
+.recordsContainer::after {
+    content: '';
+    position: absolute;
+    bottom: 30px;
+    left: 0;
+    width: 75%;
+    height: 9rem;
+    margin: 0% 12%;
+    background-image: radial-gradient(circle, #a3a3a344 3px, transparent 4px);
+    background-size: 35px 25px;
+    background-position: 0 0;
+    z-index: 0;
+}
+
+/* ========== Responsive Styling ========== */
+
+/* Tablets (max-width: 1024px) */
+@media (max-width: 1024px) {
+    .statsContainer {
+        gap: 4rem;
+        padding: 30px 10px;
+
+    }
+
+    .number {
+        font-size: 70px;
+    }
+
+    .label {
+        font-size: 1.4rem;
+    }
+
+    .heading {
+        font-size: 2.2rem;
+    }
+}
+
+/* Mobile (max-width: 768px) */
+@media (max-width: 768px) {
+    .recordsContainer {
+        margin: 50px 0;
+        padding: 30px 10px;
+    }
+
+    .heading {
+        font-size: 1.8rem;
+    }
+
+    .number {
+        font-size: 50px;
+    }
+
+    .label {
+        font-size: 1.2rem;
+    }
+
+    .recordsContainer::after {
+        display: none;
+        /* Optional: hide background dots on small screens */
+    }
+}
+
+/* Small Mobile (max-width: 480px) */
+@media (max-width: 480px) {
+    .statsContainer {
+        gap: 2rem;
+        flex-direction: column;
+    }
+
+    .number {
+        font-size: 42px;
+    }
+
+    .label {
+        font-size: 1rem;
+    }
+
+    .heading {
+        font-size: 1.5rem;
+    }
+}
