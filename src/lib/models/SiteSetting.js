@@ -71,7 +71,6 @@ const SiteSettingsSchema = new mongoose.Schema(
 );
 
 const SiteSettingsModel =
-  mongoose.models.SiteSettings ||
-  mongoose.model("SiteSettings", SiteSettingsSchema);
+  mongoose.models.SiteSettings || mongoose.model("SiteSettings", SiteSettingsSchema);
 
 export default SiteSettingsModel;

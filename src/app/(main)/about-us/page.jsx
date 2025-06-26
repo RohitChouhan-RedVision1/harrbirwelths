@@ -1,12 +1,8 @@
-// src/app/about/page.jsx (or wherever your AboutUs component is located)
-"use client";
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { FaRegCheckCircle } from "react-icons/fa";
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { getAboutus, getMissionVission, getSiteData, getTeams } from "@/lib/functions";
 
 export async function generatemetadata() {
   return {
@@ -15,56 +11,18 @@ export async function generatemetadata() {
   };
 }
 
-function createMarkup(item) {
-    return { __html: item };
+export default async function AboutUs() {
+  const siteSettings = await getSiteData();
+  const missionvission = await getMissionVission();
+  const teams = await getTeams();
+  const aboutus = await getAboutus();
+
+  function createMarkup(item) {
+    return { __html: item || "" };
   }
 
-export default  function AboutUs() {
-   const [siteSettings, setSiteSettings] = useState(null);
-   const [missionvission, setMissionvission] = useState(null);
-   const [teams, setTeams] = useState(null);
-   const [aboutus, setAboutus] = useState(null);
-
-
-  useEffect(() => {
-    const getData = async () => {
-      const response = await axios.get("/api/admin/site-settings");
-      if (response.statusText === "OK") {
-        setSiteSettings(response.data[0]);
-      }
-    };
-      const getmissionvission = async () => {
-      const response = await axios.get("/api/mission-vision");
-      console.log(response);
-      if (response.statusText === "OK") {
-        setMissionvission(response.data);
-      }
-    };
-
-
-
-     const getAboutus = async () => {
-      const response = await axios.get("/api/aboutus");
-
-      if (response.statusText === "OK") {
-        setAboutus(response.data[0]);
-      }
-    };
-
-     const getteams = async () => {
-      const response = await axios.get("/api/teams");
-      if (response.statusText === "OK") {
-        setTeams(response.data[0]);
-      }
-    };
-    getData();
-    getmissionvission();
-    getAboutus();
-    getteams()
-  }, []);
-  console.log(teams)
   return (
-    <div className="">
+    <div>
       {/* Hero Section */}
       <div className="flex bg-center bg-no-repeat bg-cover bg-[url('/images/pay-premium/pay-premium.webp')] overflow-hidden text-start justify-start items-center h-64">
         <div className="max-w-screen-xl mx-auto">
@@ -75,21 +33,12 @@ export default  function AboutUs() {
       </div>
 
       {/* Introduction Section */}
-      <motion.section
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1, delay: 0.2 }}
-        className="md:my-20 my-10 md:px-0 px-3"
-      >
+      <section className="md:my-20 my-10 md:px-0 px-3">
         <h2 className="text-4xl text-[var(--rv-primary)] md:text-5xl font-bold mb-6 text-center">
           About Us
         </h2>
         <p className="text-gray-800 max-w-5xl mx-auto text-center mb-5">
-          {siteSettings?.websiteName} is a Wealth Management/Financial Planning
-          Firm. This Firm running by professionals and Experience Management.
-          Our Expertise is in "Need Base Financial Planning" which helps our
-          customers to achieve their Financial Goals with proper Risk
-          Management.
+          {siteSettings?.websiteName} is a Wealth Management/Financial Planning Firm. This Firm is run by professionals and experienced management. Our expertise is in "Need-Based Financial Planning" which helps our customers achieve their Financial Goals with proper Risk Management.
         </p>
 
         {/* Top Features Section */}
@@ -105,28 +54,20 @@ export default  function AboutUs() {
             "30+ Years Combined Experience",
             "35+ Research Tools",
           ].map((feature, index) => (
-            <div
-              key={index}
-              className="bg-white rounded-xl shadow-md p-6 text-center hover:shadow-lg transition duration-300"
-            >
+            <div key={index} className="bg-white rounded-xl shadow-md p-6 text-center hover:shadow-lg transition duration-300">
               <p className="text-lg font-medium text-gray-800">{feature}</p>
             </div>
           ))}
         </div>
-      </motion.section>
+      </section>
 
+      {/* About Us Detailed Section */}
       <div className="bg-[var(--rv-secondary)]">
         <div className="max-w-screen-xl mx-auto md:py-20 py-10 md:px-0 px-3">
-          {/* Transforming Ambitions Section */}
-          <motion.section
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-6 items-center"
-          >
+          <section className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-6 items-center">
             <div className="relative">
               <Image
-                src={aboutus?.image?.url}
+                src={aboutus[0]?.image?.url}
                 alt="About Us"
                 width={550}
                 height={550}
@@ -135,64 +76,37 @@ export default  function AboutUs() {
             </div>
             <div>
               <h2 className="text-3xl text-white md:text-4xl font-bold mb-6">
-                {aboutus?.title}
+                {aboutus[0]?.title}
               </h2>
               <div
-                      dangerouslySetInnerHTML={createMarkup(aboutus?.description
-)}
-                      className="text-gray-100 mb-6"
-                    />
-              
+                dangerouslySetInnerHTML={createMarkup(aboutus[0]?.description)}
+                className="text-gray-100 mb-6"
+              />
             </div>
-          </motion.section>
+          </section>
         </div>
       </div>
 
+      {/* Mission, Vision, Core Values */}
       <div className="max-w-screen-xl mx-auto md:py-20 py-10 md:px-0 px-3">
-        {/* Mission, Vision, Value Section */}
-        <motion.section
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 0.6 }}
-          className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16"
-        >
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
           <div className="group bg-[var(--rv-primary)] p-6 rounded-xl shadow-lg hover:scale-105 transition-transform">
-            {/* <Image
-              src="/svg/mission.svg"
-              alt="Mission"
-              width={60}
-              height={60}
-            /> */}
             <h3 className="text-2xl font-bold text-white my-3">Our Mission</h3>
-            <p className="text-gray-100">
-              {missionvission?.mission}
-            </p>
+            <p className="text-gray-100">{missionvission?.mission}</p>
           </div>
           <div className="group bg-[var(--rv-primary)] p-6 rounded-xl shadow-lg hover:scale-105 transition-transform">
-            {/* <Image src="/svg/vision.svg" alt="Vision" width={60} height={60} /> */}
             <h3 className="text-2xl font-bold text-white my-3">Our Vision</h3>
-            <p className="text-gray-100">
-              {missionvission?.vision}
-            </p>
+            <p className="text-gray-100">{missionvission?.vision}</p>
           </div>
-        </motion.section>
+        </section>
 
-        {/* Core Values */}
-        <motion.section
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 0.6 }}
-          className="mb-16 "
-        >
-          <h3 className="text-3xl  font-semibold text-[var(--rv-primary)] text-center mb-6">
+        <section className="mb-16">
+          <h3 className="text-3xl font-semibold text-[var(--rv-primary)] text-center mb-6">
             Core Values
           </h3>
-          
           <p className="text-center max-w-3xl mx-auto text-gray-700 mb-4">
-            We firmly believe that our Core Values have served as the
-            Cornerstone for the Expansion and Success of our Company.
+            We firmly believe that our Core Values have served as the Cornerstone for the Expansion and Success of our Company.
           </p>
-          
           <ul className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 text-center max-w-4xl mx-auto">
             {[
               "Financial Education",
@@ -209,169 +123,82 @@ export default  function AboutUs() {
               </li>
             ))}
           </ul>
-        </motion.section>
+        </section>
       </div>
 
+      {/* Team Section */}
       <div className="bg-[var(--rv-secondary)]">
         <div className="max-w-screen-xl mx-auto md:py-20 py-10 md:px-0 px-3">
-          <motion.section
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 0.8 }}
-            className="mb-20"
-          >
+          <section className="mb-20">
             <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-white mb-12 text-center">
               Meet the Minds Powering the Future of Wealth Management
             </h2>
-            <div className="mb-12">
-              <div className="group bg-[var(--rv-primary)] p-8 rounded-xl shadow-lg transition-transform transform hover:scale-105 hover:shadow-2xl mb-10">
-                <div className="grid md:grid-cols-6 justify-center gap-5">
-                  <div className="md:col-span-2">
-                    <Image
-                      src={teams?.image?.url}
-                      alt="Mr. ABHISHEK SHAH"
-                      width={380}
-                      height={380}
-                      className="rounded grayscale group-hover:grayscale-0 transition-all mr-4"
-                    />
-                  </div>
-                  <div className="md:col-span-4">
-                    <div>
-                      <h3 className="text-2xl font-bold text-white pt-0 mt-0 mb-4">
-                        {teams?.name}
-                      </h3>
-                    </div>
-                     <div
-                      dangerouslySetInnerHTML={createMarkup(teams?.description
-)}
-                      className="text-gray-100 mb-4"
-                    />
-
-                    {/* Quick Bio */}
-                   
-                   <div className="">
-                      <h4 className="text-xl font-semibold text-white mb-2">
-                        Quick Bio
-                      </h4>
-                      <ul className="list-disc pl-5 space-y-2 text-gray-100">
-                        <li className="flex items-start gap-2">
-                        <FaRegCheckCircle className="text-white text-2xl" />
-                          CFP (FPSB - Financial Planning Standard Board, USA)
-                        </li>
-                        <li className="flex items-start gap-2">
-                        <FaRegCheckCircle className="text-white text-2xl" />
-                          CFGP (AAFM - American Academy of Financial Management)
-                        </li>
-                        <li className="flex items-start gap-2">
-                        <FaRegCheckCircle className="text-white text-2xl" />
-                          30+ Certification courses related to Financial Markets (BSE, NSE, AMFI, etc.)
-                        </li>
-                        <li className="flex items-start gap-2">
-                        <FaRegCheckCircle className="text-white text-2xl" />
-                          B.Com (South Gujarat University)
-                        </li>
-                        <li className="flex items-start gap-2">
-                        <FaRegCheckCircle className="text-white text-2xl" />
-                          Author of the book "Mera Wealth Plan"
-                        </li>
-                        <li className="flex items-start gap-2">
-                        <FaRegCheckCircle className="text-white text-2xl" />
-                          Regular article writer on financial topics in Divyabhaskar, Gujarat Samachar, and Gujarat Guardian newspapers
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
+            <div className="group bg-[var(--rv-primary)] p-8 rounded-xl shadow-lg transition-transform transform hover:scale-105 hover:shadow-2xl mb-10">
+              <div className="grid md:grid-cols-6 justify-center gap-5">
+                <div className="md:col-span-2">
+                  <Image
+                    src={teams[0]?.image?.url}
+                    alt={teams[0]?.name}
+                    width={380}
+                    height={380}
+                    className="rounded grayscale group-hover:grayscale-0 transition-all mr-4"
+                  />
                 </div>
-                 
+                <div className="md:col-span-4">
+                  <h3 className="text-2xl font-bold text-white mb-4">{teams[0]?.name}</h3>
+                  <div
+                    dangerouslySetInnerHTML={createMarkup(teams[0]?.description)}
+                    className="text-gray-100 mb-4"
+                  />
+                  <h4 className="text-xl font-semibold text-white mb-2">Quick Bio</h4>
+                  <ul className="list-disc pl-5 space-y-2 text-gray-100">
+                    <li className="flex items-start gap-2">
+                      <FaRegCheckCircle className="text-white text-2xl" />
+                      CFP (FPSB - Financial Planning Standard Board, USA)
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <FaRegCheckCircle className="text-white text-2xl" />
+                      CFGP (AAFM - American Academy of Financial Management)
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <FaRegCheckCircle className="text-white text-2xl" />
+                      30+ Certification courses related to Financial Markets (BSE, NSE, AMFI, etc.)
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <FaRegCheckCircle className="text-white text-2xl" />
+                      B.Com (South Gujarat University)
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <FaRegCheckCircle className="text-white text-2xl" />
+                      Author of the book "Mera Wealth Plan"
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <FaRegCheckCircle className="text-white text-2xl" />
+                      Writes financial articles for Divyabhaskar, Gujarat Samachar, Gujarat Guardian
+                    </li>
+                  </ul>
+                </div>
               </div>
-
-              {/* <div className="group bg-[var(--rv-primary)] p-8 rounded-xl shadow-lg transition-transform transform hover:scale-105 hover:shadow-2xl">
-                <div className="grid md:grid-cols-6 justify-center md:gap-5">
-                <div className="md:col-span-4 mb-4">
-                    <div>
-                      <h3 className="text-2xl font-bold text-white pt-0 mt-0 mb-4">
-                      Ms. RUBINA HAKIM (CFGP)
-                      </h3>
-                    </div>
-                    <p className="text-gray-100 mb-4">
-                    Rubina is a Director & BDO of Ethicus Wealth. She is passionate about helping
-people for FINANCIAL PLANNING & WEALTH MANAGEMENT through Various
-Wealth Management products.
-                    </p>
-                    <p className="text-gray-100 mb-4">
-                    She does research & analysis of Mutual Funds. Currently she is educating
-people on how to achieve their Financial Goals through Financial Planning. Her
-motive is to give correct investment advice related to their risk appetite and
-protect their families against uncertainties and helping them to achieve their
-Financial Goals in a discipline manner.
-                    </p>
-
-                    <div className="mt-6">
-                      <h4 className="text-xl font-semibold text-white mb-2">
-                        Quick Bio
-                      </h4>
-                      <ul className="list-disc pl-5 space-y-2 text-gray-100">
-                        <li className="flex items-start gap-2">
-                        <FaRegCheckCircle className="text-white text-2xl" />
-                          AMFI Certified - NISM
-                        </li>
-                          <li className="flex items-start gap-2">
-                        <FaRegCheckCircle className="text-white text-2xl" />
-                          CFGP (AAFM - American Academy of Financial Management)
-                        </li>
-                          <li className="flex items-start gap-2">
-                        <FaRegCheckCircle className="text-white text-2xl" />
-                          IRDA Certified - NISM
-                        </li>
-                          <li className="flex items-start gap-2">
-                        <FaRegCheckCircle className="text-white text-2xl" />
-                          Equity Fundamental and Technical Analysis
-                        </li>
-                          <li className="flex items-start gap-2">
-                        <FaRegCheckCircle className="text-white text-2xl" />
-                          Diploma In Information Technology (Gujarat Technological University)
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                  <div className="md:col-span-2 col-span-4">
-                    <Image
-                      src="/rubinahakim.jpg" // Replace with actual image path
-                      alt="rubinahakim"
-                      width={300}
-                      height={80}
-                      className="rounded grayscale group-hover:grayscale-0 transition-all mr-4 "
-                    />
-                  </div>
-                </div>
-              </div> */}
             </div>
-          </motion.section>
+          </section>
         </div>
       </div>
 
+      {/* Call to Action Section */}
       <div className="max-w-screen-xl mx-auto py-20">
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 1 }}
-          className="text-center"
-        >
+        <section className="text-center">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
             Join Us on a Journey to Infinite Growth!
           </h2>
-          <p className=" text-gray-700 max-w-3xl mx-auto mb-8">
-            At {siteSettings?.websiteName}, we don’t just manage wealth—we shape
-            financial futures. Join us in transforming financial growth for
-            business owners across India. Together, we’ll redefine what’s
-            possible.
+          <p className="text-gray-700 max-w-3xl mx-auto mb-8">
+            At {siteSettings?.websiteName}, we don’t just manage wealth—we shape financial futures. Join us in transforming financial growth for business owners across India. Together, we’ll redefine what’s possible.
           </p>
           <Link href="/contact-us">
-             <button className="primarybutton">
+            <button className="primarybutton">
               Get Started
             </button>
           </Link>
-        </motion.section>
+        </section>
       </div>
     </div>
   );

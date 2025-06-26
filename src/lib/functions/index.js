@@ -1,9 +1,12 @@
 import { ConnectDB } from "../db/ConnectDB";
+import AboutUsModel from "../models/AboutUsModel";
 import ArnModel from "../models/ArnModel";
 import BlogsModel from "../models/BlogModel";
+import MissionVisionModel from "../models/MissionVissionModel";
 import ServicesModel from "../models/ServicesModel";
 import SiteSettingsModel from "../models/SiteSetting";
 import SocialMediaModel from "../models/SocialMedia";
+import TeamModel from "../models/TeamModel";
 import TestimonialModel from "../models/TestimonialModel";
 import VideoModel from "../models/VideoModel";
 import fs from 'fs';
@@ -13,6 +16,12 @@ import path from 'path';
 export async function getSiteData() {
     await ConnectDB();
     const data = await SiteSettingsModel?.findOne({}).select('-_id');
+    return data ? data.toObject() : {};
+}
+
+export async function getMissionVission() {
+    await ConnectDB();
+    const data = await MissionVisionModel?.findOne({}).select('-_id');
     return data ? data.toObject() : {};
 }
 
@@ -37,6 +46,18 @@ export async function getServiceData() {
 export async function getTestimonials() {
     await ConnectDB();
     const data = await TestimonialModel?.find({}).select('-_id');  // Use find() instead of findOne()
+    return data ? data.map(service => service.toObject()) : [];
+};
+
+export async function getTeams() {
+    await ConnectDB();
+    const data = await TeamModel?.find({}).select('-_id');  // Use find() instead of findOne()
+    return data ? data.map(service => service.toObject()) : [];
+};
+
+export async function getAboutus() {
+    await ConnectDB();
+    const data = await AboutUsModel?.find({}).select('-_id');  // Use find() instead of findOne()
     return data ? data.map(service => service.toObject()) : [];
 };
 export async function getLatestBlogs() {
