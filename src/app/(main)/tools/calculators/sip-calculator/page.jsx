@@ -51,9 +51,9 @@ export default function Page() {
 
   const setDuration = (years) => {
     const parsedYears = parseFloat(years);
-    if (!isNaN(parsedYears)) {
+    // if (!isNaN(parsedYears)) {
       setInvestmentDuration(parsedYears);
-    }
+    // }
   };
 
   const handleCalculatorChange = (e) => {
@@ -62,9 +62,32 @@ export default function Page() {
       router.push(selectedRoute); // Navigate to selected route
     }
   };
+const chartConfig = {
+    invested: {
+        label: "Invested Amount",
+        color: "var(--rv-primary)",
+    },
+    return: {
+        label: "Return Amount",
+        color: "var(--rv-secondary)",
+    },
+}
+
+const chartConfig1 = {
+    investedAmount: {
+        label: "Invested Amount",
+        color: "var(--rv-primary)",
+    },
+    growth: {
+        label: "Return Amount",
+        color: "var(--rv-secondary)",
+    },
+};
+
 
   return (
-    <div className="max-w-screen-xl mx-auto py-[30px] lg:py-[60px]">
+    <div className="">
+    <div className="max-w-screen-xl mx-auto main_section">
       <div className="">
         <div className="mb-5 flex flex-col md:flex-row gap-5 justify-between">
           <div className="">
@@ -98,46 +121,45 @@ export default function Page() {
                   <div className="input-fields mt-5 mb-10">
                     <div>
                       <div className="flex justify-between">
-                        <h3>Monthly investment</h3>
+                        <span>Monthly investment (₹)</span>
                         <div>
-                          <span className="font-semibold text-green-700">
-                            ₹
-                          </span>
                           <input
                             type="number" // Change type to number for better input handling
                             value={monthlyInvestment}
+                            placeholder="0"
                             onChange={(e) =>
                               setMonthlyInvestment(parseFloat(e.target.value))
                             }
-                            className="font-semibold text-green-700 w-14 border-none"
+                            className="font-semibold text-[var(--rv-primary] w-36 border px-2 py-2 rounded"
                           />
                         </div>
                       </div>
                       <Input
                         type="range"
                         min="500"
-                        max="50000"
-                        step="500"
-                        value={monthlyInvestment}
+                        max="100000"
+                        step="100"
+                        value={isNaN(monthlyInvestment) ? 0 : monthlyInvestment}
                         onChange={(e) =>
                           setMonthlyInvestment(parseFloat(e.target.value))
                         }
                         className="customRange w-full"
                         style={{
-                          "--progress": `${
-                            ((monthlyInvestment - 500) / (50000 - 500)) * 100
-                          }%`,
+                          "--progress": `${(((isNaN(monthlyInvestment) ? 0 : monthlyInvestment) - 100) /
+                            (100000 - 100)) *
+                            100}%`,
                         }}
                       />
                     </div>
                     <div className="items-center mt-5">
                       <div className="flex justify-between">
-                        <h3>Time period</h3>
+                        <span>Time period (Y)</span>
                         <input
                           type="number" // Change type to number for better input handling
                           value={investmentDuration}
+                          placeholder="0"
                           onChange={(e) => setDuration(e.target.value)} // Update duration
-                          className="font-semibold text-green-700 w-5 border-none"
+                          className="font-semibold text-[var(--rv-primary] w-20 border px-2 py-2 rounded"
                         />
                       </div>
                       <input
@@ -145,20 +167,26 @@ export default function Page() {
                         min="1"
                         max="40"
                         step="1"
-                        value={investmentDuration}
+                        value={isNaN(investmentDuration) ? 0 : investmentDuration}
                         onChange={(e) => setDuration(Number(e.target.value))} // Convert value to number
-                        className="w-full accent-[--rv-primary] text-gray-400"
+                        className="customRange w-full"
+                        style={{
+                          "--progress": `${(((isNaN(investmentDuration) ? 0 : investmentDuration) - 1) /
+                            (40 - 1)) *
+                            100}%`,
+                        }}
                       />
                     </div>
 
                     <div className="items-center mt-5">
                       <div className="flex justify-between">
-                        <h3>Expected Return</h3>
+                        <span>Expected Return (Y)</span>
                         <input
                           type="number" // Change type to number for better input handling
                           value={expectedReturn}
+                          placeholder="0"
                           onChange={(e) => setExpectedReturn(e.target.value)} // Update duration
-                          className="font-semibold text-green-700 w-5 border-none"
+                          className="font-semibold text-[var(--rv-primary] w-20   border px-2 py-2 rounded"
                         />
                       </div>
                       <input
@@ -166,11 +194,16 @@ export default function Page() {
                         min="1"
                         max="30"
                         step="1"
-                        value={expectedReturn}
+                        value={isNaN(expectedReturn) ? 0 : expectedReturn}
                         onChange={(e) =>
                           setExpectedReturn(Number(e.target.value))
                         } // Convert to number
-                        className="w-full accent-[--rv-primary] text-gray-400"
+                        style={{
+                          "--progress": `${(((isNaN(expectedReturn) ? 0 : expectedReturn) - 1) /
+                            (30 - 1)) *
+                            100}%`,
+                        }}
+                         className="customRange w-full"
                       />
                     </div>
                   </div>
@@ -206,16 +239,17 @@ export default function Page() {
               </div>
               <div className="col-span-1">
                 <div className="mb-3">
-                  <SippieChart piedata={result} title={"SIP Calculator"} />
+                  <SippieChart piedata={result} title={"SIP Calculator"} chartConfig={chartConfig} />
                 </div>
                 <div>
-                  <CalculatorReturnChart data={chartdata} title="SIP" />
+                  <CalculatorReturnChart data={chartdata} title="SIP"  chartConfig={chartConfig1}/>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 }

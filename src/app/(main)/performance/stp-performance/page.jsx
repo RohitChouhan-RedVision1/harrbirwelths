@@ -166,7 +166,7 @@ export default function Page() {
   };
 
   const haldleSubmit = async () => {
-    console.log(tofundpcode.length === 0)
+    // console.log(tofundpcode.length === 0)
     if (selectedAcms.length === 0 || tofundpcode.length === 0 || pcode.length === 0) {
       toast({
         variant: "destructive",
@@ -176,7 +176,7 @@ export default function Page() {
     } else {
       try {
         const response = await axios.post(
-          `${process?.env?.NEXT_PUBLIC_DATA_API}/api/research-calculator/stp-performance`,
+          `${process.env.NEXT_PUBLIC_DATA_API}/api/research-calculator/stp-performance`,
           {
             startDate: startsipDate,
             endDate: endsipDate,
@@ -216,20 +216,21 @@ export default function Page() {
   }, []);
 
   const handlePdf = async (result, title, destinationTitle, startsipDate, valuationDate) => {
-    console.log(result)
+    // console.log(result)
     generateStpPDF(result, title, destinationTitle, startsipDate, valuationDate, "graphId", siteData);
   };
 
   return (
     <div className="">
-        <div className="flex bg-center bg-no-repeat bg-cover bg-[url('/images/pay-premium/pay-premium.webp')] bg-gray-500 overflow-hidden text-start justify-start items-center h-64">
+      <div className="flex bg-center bg-no-repeat bg-cover bg-[url('/images/pay-premium/pay-premium.webp')] bg-gray-500 overflow-hidden text-start justify-start items-center h-64">
         <div className="max-w-screen-xl mx-auto">
           <h1 className="text-gray-900 text-3xl md:text-5xl font-bold">
           STP Performance
           </h1>
         </div>
       </div>
-      <div className="max-w-screen-xl mx-auto py-[30px] md:py-[60px] lg:px-1 px-3">
+      <div className="max-w-screen-xl mx-auto main_section lg:px-1 px-3">
+     
         <Toaster />
         <div>
           <div className="col-span-1 border border-gray-200 rounded-2xl bg-white p-2 mb-3">
@@ -294,7 +295,7 @@ export default function Page() {
                       <p className="font-semibold text-gray-700">
                         Select Equity Funds
                       </p>
-                      {console.log(assetCategory)}
+                      {/* {console.log(assetCategory)} */}
                       <div className="mt-2 border border-gray-300 p-3 rounded h-60 overflow-y-auto">
                         {/* Equity Funds checkboxes here */}
                         {assetCategory
@@ -588,7 +589,7 @@ export default function Page() {
                       htmlFor="schemeDate"
                       className="text-sm block font-semibold text-gray-700 mb-1"
                     >
-                       Start Date
+                      Start Date
                     </label>
                     <input
                       type="date"

@@ -19,23 +19,32 @@ import {
 
 export const description = "A pie chart with a legend"
 
+const chartConfig = {
+    CurrentMonthlyExpenses: {
+        label: "Current Monthly Expenses",
+        color: "var(--rv-primary)",
+    },
+    FutureMonthlyExpenses: {
+        label: "Future Monthly Expenses",
+        color: "var(--rv-secondary)",
+    },
+}
 
-
-export function SippieChart({ piedata, title,chartConfig }) {
+export function RetirementChart({ piedata, title, customLabels }) {
     const chartData = [
         {
-            browser: "invested",
-            visitors: piedata?.totalInvestment,
-            fill: "var(--rv-primary)",
+            browser: "CurrentMonthlyExpenses",
+            visitors: piedata?.CurrentMonthlyExpenses,
+            fill: "var(--rv-secondary)",
         },
         {
-            browser: "return",
-            visitors: piedata?.futureValue,
-            fill: "var(--rv-secondary)",
+            browser: "FutureMonthlyExpenses",
+            visitors: piedata?.FutureMonthlyExpenses,
+            fill: "var(--rv-primary)",
         },
     ]
 
-    const labels = {
+    const labels = customLabels || {
         invested: chartConfig.invested.label,
         return: chartConfig.return.label,
     }

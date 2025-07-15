@@ -43,21 +43,43 @@ export default function Page() {
           setChartData(data.yearlyData);
         }
       } catch (error) {
-        console.log(error);
+        // console.log(error);
       }
     };
     calculateCarPlan();
   }, [totalInvestment, investmentDuration, expectedReturn, inflationRate]);
 
+  // console.log(totalInvestment)
   const handleCalculatorChange = (e) => {
     const selectedRoute = e.target.value;
     if (selectedRoute) {
       router.push(selectedRoute); // Navigate to selected route
     }
   };
+const chartConfig = {
+    invested: {
+        label: "Current Cost of Car",
+        color: "var(--rv-primary)",
+    },
+    return: {
+        label: "Future Cost of Car",
+        color: "var(--rv-secondary)",
+    },
+}
 
+const chartConfig1 = {
+    investedAmount: {
+        label: "Current Cost of Car",
+        color: "var(--rv-primary)",
+    },
+    growth: {
+        label: "Future Cost of Car",
+        color: "var(--rv-secondary)",
+    },
+};
   return (
-    <div className="max-w-screen-xl mx-auto py-[30px] lg:py-[60px]">
+    <div className="">
+    <div className="max-w-screen-xl mx-auto main_section">
       <div className=" ">
         <div className="mb-5 flex flex-col md:flex-row gap-5 justify-between ">
           <div className="">
@@ -91,18 +113,16 @@ export default function Page() {
                   <div className="input-fields mt-5 mb-10">
                     <div>
                       <div className="flex justify-between">
-                        <h4>Current Cost</h4>
+                        <p>Current Cost (₹)</p>
                         <div>
-                          <span className="font-semibold text-green-700">
-                            ₹
-                          </span>
                           <input
                             type="number"
+                            placeholder="0"
                             value={totalInvestment}
                             onChange={(e) =>
                               setCurrentExpenses(parseFloat(e.target.value))
                             }
-                            className="font-semibold text-green-700 w-24 border-none"
+                            className="font-semibold text-[var(--rv-primary] w-30 border px-2 py-2 rounded"
                           />
                         </div>
                       </div>
@@ -111,14 +131,14 @@ export default function Page() {
                         min="1000000"
                         max="100000000"
                         step="1000"
-                        value={totalInvestment}
+                        value={isNaN(totalInvestment) ? 0 : totalInvestment}
                         onChange={(e) =>
                           setCurrentExpenses(parseFloat(e.target.value))
                         }
                         className="customRange w-full"
                         style={{
                           "--progress":
-                            ((totalInvestment - 1000000) /
+                            (((isNaN(totalInvestment) ? 0 : totalInvestment) - 1000000) /
                               (100000000 - 1000000)) *
                               100 +
                             "%",
@@ -127,17 +147,18 @@ export default function Page() {
                     </div>
                     <div className="items-center mt-5">
                       <div className="flex justify-between">
-                        <h4>
+                        <p>
                           After How Many Years Do You Wish To Plan Your Dream
-                          Car
-                        </h4>
+                          Car (Y)
+                        </p>
                         <input
                           type="number"
                           value={investmentDuration}
+                          placeholder="0"
                           onChange={(e) =>
                             setInvestmentDuration(parseFloat(e.target.value))
                           }
-                          className="font-semibold text-green-700 w-10 border-none"
+                          className="font-semibold text-[var(--rv-primary] w-16 border px-2 py-2 rounded"
                         />
                       </div>
                       <Input
@@ -145,28 +166,29 @@ export default function Page() {
                         min="1"
                         max="40"
                         step="1"
-                        value={investmentDuration}
+                        value={isNaN(investmentDuration) ? 0 : investmentDuration}
                         onChange={(e) =>
                           setInvestmentDuration(parseFloat(e.target.value))
                         }
                         className="customRange w-full"
                         style={{
                           "--progress": `${
-                            ((investmentDuration - 1) / (40 - 1)) * 100
+                            (((isNaN(investmentDuration) ? 0 : investmentDuration) - 1) / (40 - 1)) * 100
                           }%`,
                         }}
                       />
                     </div>
                     <div className="items-center mt-5">
                       <div className="flex justify-between">
-                        <h4>Rate of Return (%)</h4>
+                        <p>Rate of Return (%)</p>
                         <input
                           type="number"
                           value={expectedReturn}
+                          placeholder="0"
                           onChange={(e) =>
                             setExpectedReturn(parseFloat(e.target.value))
                           }
-                          className="font-semibold text-green-700 w-10 border-none"
+                          className="font-semibold text-[var(--rv-primary] w-16 border px-2 py-2 rounded"
                         />
                       </div>
                       <Input
@@ -174,28 +196,29 @@ export default function Page() {
                         min="1"
                         max="30"
                         step="1"
-                        value={expectedReturn}
+                        value={isNaN(expectedReturn) ? 0 : expectedReturn}
                         onChange={(e) =>
                           setExpectedReturn(parseFloat(e.target.value))
                         }
                         className="customRange w-full"
                         style={{
                           "--progress": `${
-                            ((expectedReturn - 1) / (30 - 1)) * 100
+                            (((isNaN(expectedReturn) ? 0 : expectedReturn) - 1) / (30 - 1)) * 100
                           }%`,
                         }}
                       />
                     </div>
                     <div className="items-center mt-5">
                       <div className="flex justify-between">
-                        <h4>Inflation Rate (%)</h4>
+                        <p>Inflation Rate (%)</p>
                         <input
                           type="number"
                           value={inflationRate}
+                          placeholder=""
                           onChange={(e) =>
                             setInflationRate(parseFloat(e.target.value))
                           }
-                          className="font-semibold text-green-700 w-10 border-none"
+                          className="font-semibold text-[var(--rv-primary] w-16 border px-2 py-2 rounded"
                         />
                       </div>
                       <Input
@@ -203,14 +226,14 @@ export default function Page() {
                         min="1"
                         max="30"
                         step="1"
-                        value={inflationRate}
+                        value={isNaN(inflationRate) ? 0 : inflationRate}
                         onChange={(e) =>
                           setInflationRate(parseFloat(e.target.value))
                         }
                         className="customRange w-full"
                         style={{
                           "--progress": `${
-                            ((inflationRate - 1) / (30 - 1)) * 100
+                            (((isNaN(inflationRate) ? 0 : inflationRate) - 1) / (30 - 1)) * 100
                           }%`,
                         }}
                       />
@@ -255,15 +278,14 @@ export default function Page() {
                 <SippieChart
                   piedata={result}
                   title={"Current & Future Cost Of Car Breakup"}
-                  customLabels={{
-                    invested: "Current Cost of Car",
-                    return: "Future Cost of Car",
-                  }}
+                 
+                  chartConfig={chartConfig}
                 />
                 <div className="mt-5">
                   <CalculatorReturnChart
                     data={chartData}
                     title={"Car Planning "}
+                    chartConfig={chartConfig1}
                   />
                 </div>
               </div>
@@ -271,6 +293,7 @@ export default function Page() {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 }

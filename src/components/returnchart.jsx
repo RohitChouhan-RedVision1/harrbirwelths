@@ -47,7 +47,8 @@ const CustomTooltip = ({ active, payload, label }) => {
     return null;
 };
  
-export function ReturnChart({ data, color }) {
+export function ReturnChart({ data }) {
+ 
     const [chartData, setChartData] = useState(filterDataByRange(data, new Date(new Date().setFullYear(new Date().getFullYear() - 1))));
  
     const getMinValue = () => {
@@ -76,8 +77,8 @@ export function ReturnChart({ data, color }) {
                         >
                             <defs>
                                 <linearGradient id="gradientFill" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor={`#${color}`} stopOpacity={0.8} />
-                                    <stop offset="95%" stopColor={`#${color}`} stopOpacity={0.1} />
+                                    <stop offset="5%" stopColor={"var(--rv-secondary)"} stopOpacity={0.8} />
+                                    <stop offset="95%" stopColor={"var(--rv-secondary)"} stopOpacity={0.1} />
                                 </linearGradient>
                             </defs>
                             <XAxis
@@ -97,13 +98,13 @@ export function ReturnChart({ data, color }) {
                             />
                             <Tooltip
                                 content={<CustomTooltip />}
-                                contentStyle={{ backgroundColor: "#1F2937", color: "#ffffff", border: "none", borderRadius: "4px" }}
+                                contentStyle={{ backgroundColor: "var(--rv-secondary)", color: "#ffffff", border: "none", borderRadius: "4px" }}
                                 itemStyle={{ color: "#ffffff" }}
                             />
                             <Area
                                 type="monotone"
                                 dataKey="value"
-                                stroke="#000000c2"
+                                stroke="var(--rv-primary)"
                                 strokeWidth={1}
                                 fill="url(#gradientFill)"
                                 fillOpacity={1}
@@ -168,3 +169,5 @@ export function ReturnChart({ data, color }) {
         </Card>
     );
 }
+ 
+export const description = "A simple area chart";

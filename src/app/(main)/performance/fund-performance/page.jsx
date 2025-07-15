@@ -6,7 +6,7 @@ import React, { useEffect, useState } from "react";
 import Loading from "./loading";
 import PageLoading from "./loadingpage";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
-
+import CryptoJS from "crypto-js";
  
 export default function MarketUpdate() {
   const [categories, setCategories] = useState([]);
@@ -18,7 +18,8 @@ export default function MarketUpdate() {
   const [searchTerm, setSearchTerm] = useState(""); // State for search input
   const [loading, setLoading] = useState(false);
   const [pageloading, setPageLoading] = useState(false);
-  const router = useRouter();
+  const SECRET_KEY = process.env.NEXT_PUBLIC_SECRET_KEY;
+  const router= useRouter()
  
   const fetchCategories = async () => {
     setPageLoading(true);
@@ -38,7 +39,7 @@ export default function MarketUpdate() {
   };
  
   const fetchSchemes = async (category) => {
-    console.log("category:", category);
+    // console.log("category:", category);
     setLoading(true);
     try {
       const response = await axios.get(
@@ -69,7 +70,7 @@ export default function MarketUpdate() {
       );
       if (response.status === 200) {
         setPerformanceData(response.data.data);
-        console.log("Schemes response:", response);
+        // console.log("Schemes response:", response);
       }
     } catch (error) {
       console.error("Error fetching performance data:", error);
@@ -93,20 +94,22 @@ export default function MarketUpdate() {
   };
  
   const handlePerformanceClick = (performance) => {
-    const slug = performance.funddes
-      .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, "")
-      .trim()
-      .replace(/\s+/g, "-")
-      .replace(/--+/g, "-")
-      .replace(/^-+|-+$/g, "");
-    const queryParameters = new URLSearchParams({
-      id: selectedScheme,
+     const dataToStore = {
       pcode: performance.pcode,
-    }).toString();
- 
+      ftype:selectedScheme,
+      timestamp: Date.now(),
+    };
+   
+     
+    const encrypted = CryptoJS.AES.encrypt(
+    
+      JSON.stringify(dataToStore),
+      SECRET_KEY
+    ).toString();
+
+    localStorage.setItem("encryptedFundPerormanceData", encrypted);
     // Navigate to the performance page with slug and query parameters
-    router.push(`/performance/fund-performance/${slug}?${queryParameters}`);
+     window.location.href=`/performance/fund-performance/fund-details`;
   };
  
   // Search filter logic for schemes
@@ -120,16 +123,18 @@ export default function MarketUpdate() {
     setFilteredSchemes(filtered);
   };
  
+
   return (
     <div className="">
       <div className="flex bg-center bg-no-repeat bg-cover bg-[url('/images/pay-premium/pay-premium.webp')] bg-gray-500 overflow-hidden text-start justify-start items-center h-64">
         <div className="max-w-screen-xl mx-auto">
           <h1 className="text-gray-900 text-3xl md:text-5xl font-bold">
-         Fund Performance
+          Fund Performance
           </h1>
         </div>
       </div>
-      <div className="max-w-screen-xl mx-auto py-[30px] md:py-[60px] lg:px-1 px-3">
+      <div className="max-w-screen-xl mx-auto main_section lg:px-1 px-3">
+        
         {pageloading ? (
           <PageLoading />
         ) : (

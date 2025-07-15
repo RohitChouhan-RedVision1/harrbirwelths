@@ -164,7 +164,7 @@ export default function Page() {
         } else {
             try {
                 const response = await axios.post(
-                    `${process?.env?.NEXT_PUBLIC_DATA_API}/api/research-calculator/scheme-performance`,
+                    `${process.env.NEXT_PUBLIC_DATA_API}/api/research-calculator/scheme-performance`,
                     {
                         fundPcode: pcode,
                         investedAmount: Number(SchemeAmount),
@@ -224,15 +224,16 @@ export default function Page() {
 
     return (
         <div className="">
-            <div className="flex bg-center bg-no-repeat bg-cover bg-[url('/images/pay-premium/pay-premium.webp')] bg-gray-500 overflow-hidden text-start justify-start items-center h-64">
-        <div className="max-w-screen-xl mx-auto">
-          <h1 className="text-gray-900 text-3xl md:text-5xl font-bold">
-          Scheme Performance
-          </h1>
-        </div>
-      </div>
-            <div className="px-3 lg:px-2 max-w-screen-xl mx-auto py-[30px] md:py-[60px]  ">
-                <Toaster />
+
+            <div className="px-3 lg:px-2 max-w-screen-xl mx-auto main_section ">
+                <Toaster /><div className="mb-5 flex flex-col md:flex-row gap-5 justify-between ">
+                  <div className="">
+                    <span className="text-2xl md:text-3xl font-bold uppercase">
+                      Scheme Performance
+                    </span>
+                  </div>
+                  
+                </div>
                 <div>
                     <div className='col-span-1 border border-gray-200 rounded-2xl bg-white p-2 mb-3'>
                         <div className="Scheme-calculator container mx-auto p-3 sticky top-0 z-10">
@@ -292,7 +293,7 @@ export default function Page() {
                                             <p className="font-semibold text-gray-700">
                                                 Select Equity Funds
                                             </p>
-                                            {console.log(assetCategory)}
+                                            {/* {console.log(assetCategory)} */}
                                             <div className="mt-2 border border-gray-300 p-3 rounded h-60 overflow-y-auto">
                                                 {/* Equity Funds checkboxes here */}
                                                 {assetCategory

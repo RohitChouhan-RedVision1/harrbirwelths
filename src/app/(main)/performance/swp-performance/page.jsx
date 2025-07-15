@@ -230,7 +230,7 @@ export default function Page() {
         else {
             try {
                 const response = await axios.post(
-                    `${process?.env?.NEXT_PUBLIC_DATA_API}/api/research-calculator/swp-performance`,
+                    `${process.env.NEXT_PUBLIC_DATA_API}/api/research-calculator/swp-performance`,
                     {
                         startDate: startsipDate,
                         endDate: endsipDate,
@@ -293,7 +293,8 @@ export default function Page() {
           </h1>
         </div>
       </div>
-            <div className="max-w-screen-xl mx-auto py-[30px] md:py-[60px] lg:px-1 px-3">
+            <div className="max-w-screen-xl mx-auto main_section lg:px-1 px-3">
+
                 <Toaster />
                 <div>
                     <div className='col-span-1 border border-gray-200 rounded-2xl bg-white p-2 mb-3'>
@@ -474,7 +475,6 @@ export default function Page() {
                                     </div>
                                 )}
                             </div>
-                            <hr />
                             <div className="grid grid-cols-1 lg:grid-cols-6">
                                 <div className="col-span-2 mt-2 overflow-y-auto p-2">
                                     {/* Dropdown for selecting a scheme */}

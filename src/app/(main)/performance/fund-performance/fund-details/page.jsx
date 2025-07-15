@@ -11,21 +11,20 @@ import {
 import SipCalculator from "@/components/sipcalculator";
 import { ReturnChart } from "@/components/returnchart";
 import Loading from "./loading";
+import CryptoJS from "crypto-js";
  
 export default function Page() {
-  const param = useParams();
-  const searchParams = useSearchParams();
-  const performanceId = searchParams.get("id");
-  const pcode = searchParams.get("pcode");
   const [loading, setLoading] = useState(false);
   const [performanceData, setPerformanceData] = useState(null);
   const [graphData, setGraphData] = useState(null);
   const [timeFrame, setTimeFrame] = useState("1Y");
+  const SECRET_KEY = process.env.NEXT_PUBLIC_SECRET_KEY;
+
  
-  const fetchPerformanceData = async () => {
+  const fetchPerformanceData = async (pcode,ftype) => {
     setLoading(true);
     try {
-      const sanitizedperformanceId = performanceId.includes("&") ? performanceId.replace(/&/g, "%26") : performanceId;
+      const sanitizedperformanceId = ftype.includes("&") ? ftype.replace(/&/g, "%26") : ftype;
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_DATA_API}/api/open-apis/fund-performance/fp-data?categorySchemes=${sanitizedperformanceId}&apikey=${process.env.NEXT_PUBLIC_API_KEY}`
       );
@@ -42,14 +41,14 @@ export default function Page() {
     }
   };
  
-  const fetchGraphData = async (pCode) => {
+  const fetchGraphData = async (pcode) => {
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_DATA_API}/api/open-apis/fund-performance/graph-data?pcode=${pCode}&apikey=${process.env.NEXT_PUBLIC_API_KEY}`
+        `${process.env.NEXT_PUBLIC_DATA_API}/api/open-apis/fund-performance/graph-data?pcode=${pcode}&apikey=${process.env.NEXT_PUBLIC_API_KEY}`
       );
       if (response.status === 200) {
         setGraphData(response.data);
-        console.log("Graph Data:", response.data);
+        // console.log("Graph Data:", response.data);
       }
     } catch (error) {
       console.error("Error fetching graph data:", error);
@@ -57,11 +56,24 @@ export default function Page() {
   };
  
   useEffect(() => {
-    if (pcode) {
-      fetchPerformanceData();
-      fetchGraphData(pcode, timeFrame); // Fetch graph data using pcode and time frame
-    }
-  }, [performanceId, pcode, timeFrame]);
+     const encrypted = localStorage.getItem("encryptedFundPerormanceData");
+        // console.log(encrypted,SECRET_KEY)
+        if (!encrypted) return;
+        const bytes = CryptoJS.AES.decrypt(encrypted, SECRET_KEY);
+            const decrypted = bytes.toString(CryptoJS.enc.Utf8);
+            // console.log(decrypted,SECRET_KEY)
+            if (!decrypted) throw new Error("Decryption failed");
+            const data = JSON.parse(decrypted);
+            // console.log(data,SECRET_KEY)
+            const isExpired = Date.now() - data.timestamp > 2 * 60 * 60 * 1000;
+
+      if (isExpired) {
+        localStorage.removeItem("encryptedFundPerormanceData");
+      } else {
+        fetchPerformanceData(data.pcode,data.ftype);
+        fetchGraphData(data.pcode, timeFrame);
+      }
+  }, [timeFrame]);
  
   const transformGraphData = (data) => {
     if (!data) return {};
@@ -84,7 +96,8 @@ export default function Page() {
   };
  
   return (
-    <div className="max-w-screen-xl mx-auto py-[30px] md:py-[60px] lg:px-1 px-3">
+    <div className="">
+    <div className="max-w-screen-xl mx-auto main_section lg:px-1 px-3">
       <div>
         {loading ? (
           <Loading />
@@ -103,7 +116,7 @@ export default function Page() {
                 <div className="p-4 shadow rounded mb-5">
                   <div className="grid grid-cols-1 lg:grid-cols-3 mb-2 gap-4">
                     {/* Nav section with hierarchical fallback */}
-                    {performanceData?.threeyear_navStartDate &&
+                    {/* {performanceData?.threeyear_navStartDate &&
                       performanceData.threeyear_navStartDate !== "0.00" && (
                         <div>
                           <p className="text-xs font-semibold text-stone-600">NAV: {performanceData?.threeyear_startDate}</p>
@@ -119,7 +132,7 @@ export default function Page() {
                               ₹{performanceData?.one_year}
                             </h4>
                           </div>
-                        )) || (/* Add six_month check here if available */
+                        )) || (
                         performanceData?.six_month &&
                         performanceData.six_month !== "0.00" && (
                           <div>
@@ -128,12 +141,12 @@ export default function Page() {
                               {performanceData?.six_month}
                             </h4>
                           </div>
-                        ))}
+                        ))} */}
                     {/* Second Nav with hierarchical fallback */}
                     {performanceData?.threeyear_navEndDate &&
                       performanceData.threeyear_navEndDate !== "0.00" && (
                         <div>
-                          <p className="text-xs font-semibold text-stone-600">NAV: {performanceData?.threeyear_endDate}</p>
+                          <p className="text-xs font-semibold text-stone-600">NAV</p>
                           <h4 className="font-bold text-gray-900">
                             ₹{performanceData?.threeyear_navEndDate}
                           </h4>
@@ -156,23 +169,69 @@ export default function Page() {
                             </h4>
                           </div>
                         ))}
+
+                       {performanceData?.Corpus && (
+                        <div>
+                          <p className="text-xs font-semibold text-stone-600">Corpus</p>
+                          <h4 className="font-bold text-gray-900">
+                            ₹{performanceData?.Corpus
+}
+                          </h4>
+                        </div>
+                      )} 
+
+                        
                     <div>
-                      <p className="text-xs font-semibold text-gray-600">
-                        {performanceData?.five_year === "0.00"
-                          ? performanceData?.three_year === "0.00"
-                            ? 1
-                            : 3
-                          : 5}
-                        Y CAGR returns
-                      </p>
-                      <p className="text-lg font-bold text-[var(--rv-primary)]">
-                        {performanceData?.five_year === "0.00"
-                          ? performanceData?.three_year === "0.00"
-                            ? performanceData?.one_year
-                            : performanceData?.three_year
-                          : performanceData?.five_year}
-                        %
-                      </p>
+                      {(() => {
+    const {
+      five_year,
+      three_year,
+      one_year,
+      nine_month,
+      six_month,
+      three_month,
+      one_month,
+      one_week,
+    } = performanceData || {};
+
+    let value = "0.00";
+    let label = "";
+
+    if (five_year !== "0.00") {
+      value = five_year;
+      label = "5Y";
+    } else if (three_year !== "0.00") {
+      value = three_year;
+      label = "3Y";
+    } else if (one_year !== "0.00") {
+      value = one_year;
+      label = "1Y";
+    } else if (nine_month !== "0.00") {
+      value = nine_month;
+      label = "9M";
+    } else if (six_month !== "0.00") {
+      value = six_month;
+      label = "6M";
+    } else if (three_month !== "0.00") {
+      value = three_month;
+      label = "3M";
+    } else if (one_month !== "0.00") {
+      value = one_month;
+      label = "1M";
+    } else {
+      value = one_week;
+      label = "1W";
+    }
+
+    return (
+      <>
+        <p className="text-xs font-semibold text-gray-600">
+          {label} CAGR returns
+        </p>
+        <p className="text-lg font-bold text-[var(--rv-primary)]">{value}%</p>
+      </>
+    );
+  })()}
                     </div>
                   </div>
  
@@ -181,7 +240,7 @@ export default function Page() {
                       {" "}
                       {/* Adjust this min-width as needed */}
                       {graphData ? (
-                        <ReturnChart data={transformGraphData(graphData)} />
+                        <ReturnChart data={transformGraphData(graphData)}  />
                       ) : (
                         <p>No graph data available.</p>
                       )}
@@ -279,6 +338,7 @@ export default function Page() {
           </div>
         )}
       </div>
+    </div>
     </div>
   );
 }

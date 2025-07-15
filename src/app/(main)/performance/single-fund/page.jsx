@@ -73,6 +73,7 @@ export default function Page() {
         };
     };
 
+    console.log(performanceData)
     return (
         <div className="max-w-screen-xl mx-auto">
             <div className="bg-white text-gray-900  py-10">
@@ -102,46 +103,65 @@ export default function Page() {
                         <div className="grid md:grid-cols-3 gap-4">
                             <div className='md:col-span-2'>
                                 <div className='p-4 shadow rounded mb-5'>
-                                    <div className="grid grid-cols-4 mb-2">
+                                    <div className="grid grid-cols-2 mb-2">
                                         <div>
                                             <p className="text-lg font-bold ">₹{performanceData?.NAVAmount}</p>
                                             <h6 className="text-md ">Current NAV</h6>
                                         </div>
+                                     
                                         <div>
-                                            <p className="text-lg font-bold ">{performanceData?.prev1MonthPer}</p>
-                                            <h6 className="text-md ">Month Return</h6>
-                                        </div>
-                                        <div>
-                                            <p className="text-lg font-bold ">{performanceData?.prevYearPer}</p>
-                                            <h6 className="text-md ">Year Return</h6>
-                                        </div>
-                                        <div>
-                                            {(() => {
-                                                // Helper function to parse return values and get the minimum non-zero value
-                                                const getMinReturn = () => {
-                                                    const returns = [
-                                                        { year: 5, value: parseFloat(performanceData?.prev5YearPer) || 0 },
-                                                        { year: 3, value: parseFloat(performanceData?.prev3YearPer) || 0 },
-                                                        { year: 1, value: parseFloat(performanceData?.prevYearPer) || 0 },
-                                                    ];
-                                                    const validReturns = returns.filter((r) => r.value > 0);
-                                                    if (validReturns.length === 0) return { year: 1, value: 0 };
-                                                    return validReturns.reduce((min, current) =>
-                                                        min.value < current.value ? min : current
-                                                    );
-                                                };
+                      {(() => {
+    const {
+      prev5YearPer,
+      prev3YearPer,
+      prevYearPer,
+      prev9MonthsPer,
+      prev6MonthsPer,
+      prev3MonthsPer,
+      prev1MonthPer,
+      prev1WeekPer,
+    } = performanceData || {};
 
-                                                const { year, value } = getMinReturn();
-                                                return (
-                                                    <>
-                                                        <p className="text-lg font-bold text-gray-100">
-                                                            {value.toFixed(2)}%
-                                                        </p>
-                                                        <p className="text-xs font-semibold text-gray-300">{year}Y CAGR returns</p>
-                                                    </>
-                                                );
-                                            })()}
-                                        </div>
+    let value = "0.00";
+    let label = "";
+
+    if (prev5YearPer && prev5YearPer !== "0.00") {
+  value = prev5YearPer;
+  label = "5Y";
+} else if (prev3YearPer && prev3YearPer !== "0.00") {
+  value = prev3YearPer;
+  label = "3Y";
+} else if (prevYearPer && prevYearPer !== "0.00") {
+  value = prevYearPer;
+  label = "1Y";
+} else if (prev9MonthsPer && prev9MonthsPer !== "0.00") {
+  value = prev9MonthsPer;
+  label = "9M";
+} else if (prev6MonthsPer && prev6MonthsPer !== "0.00") {
+  value = prev6MonthsPer;
+  label = "6M";
+} else if (prev3MonthsPer && prev3MonthsPer !== "0.00") {
+  value = prev3MonthsPer;
+  label = "3M";
+} else if (prev1MonthPer && prev1MonthPer !== "0.00") {
+  value = prev1MonthPer;
+  label = "1M";
+} else if (prev1WeekPer && prev1WeekPer !== "0.00") {
+  value = prev1WeekPer;
+  label = "1W";
+}
+
+
+    return (
+      <> 
+        <p className="text-lg font-bold text-[var(--rv-primary)]">{value}%</p>
+        <p className="text-md">
+          {label} CAGR returns
+        </p>
+      </>
+    );
+  })()}
+                    </div>
                                     </div>
                                     {performanceData?.nav ? (
                                         <ReturnChart data={transformGraphData(performanceData?.nav)} className="pt-10" />
@@ -185,7 +205,7 @@ export default function Page() {
                                                 <p>Minimum Sip Amount - {' '}{performanceData?.sip_minimum_installment_amount}</p>
                                             </AccordionContent>
                                         </AccordionItem>
-                                        <AccordionItem value="item-3">
+                                        {/* <AccordionItem value="item-3">
                                             <AccordionTrigger className="text-lg">Fund Objective</AccordionTrigger>
                                             <AccordionContent className="md:px-10">
                                                 <div className='mt-2'>
@@ -194,7 +214,7 @@ export default function Page() {
                                                     </div>
                                                 </div>
                                             </AccordionContent>
-                                        </AccordionItem>
+                                        </AccordionItem> */}
                                     </Accordion>
                                 </div>
                             </div>

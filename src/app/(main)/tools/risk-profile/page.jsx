@@ -107,7 +107,7 @@ const RiskProfile = () => {
                         render={({ field }) => (
                             <FormItem>
                                 <FormControl>
-                                    <Input placeholder="User Name" {...field} aria-label="User Name" className="border-2 border-black" />
+                                    <Input placeholder="User Name" {...field} aria-label="User Name*" className="border-2 border-gray-500 bg-[#E7EBEF] placeholder-red-600 text-black" />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -121,7 +121,7 @@ const RiskProfile = () => {
                         render={({ field }) => (
                             <FormItem>
                                 <FormControl>
-                                    <Input placeholder="Mobile" {...field} aria-label="Mobile Number" className="border-2 border-gray-500" />
+                                    <Input placeholder="Mobile*" {...field} aria-label="Mobile Number" className="border-2 border-gray-500 bg-[#E7EBEF] placeholder-red-600 text-black" />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -135,7 +135,7 @@ const RiskProfile = () => {
                         render={({ field }) => (
                             <FormItem>
                                 <FormControl>
-                                    <Input type="email" placeholder="Email" {...field} aria-label="Email" className="border-2 border-gray-500" />
+                                    <Input type="email" placeholder="Email*" {...field} aria-label="Email" className="border-2 border-gray-500 bg-[#E7EBEF] placeholder-red-600 text-black" />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -149,7 +149,7 @@ const RiskProfile = () => {
                         render={({ field }) => (
                             <FormItem>
                                 <FormControl>
-                                    <textarea placeholder="Message" {...field} className="w-full border-2 border-gray-500 p-1 rounded" aria-label="Message" />
+                                    <textarea placeholder="Message*" {...field} className="w-full p-2 border-2 border-gray-500 bg-[#E7EBEF] placeholder-red-600 text-black rounded" aria-label="Message" />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -168,7 +168,7 @@ const RiskProfile = () => {
           </div>
 
                     {/* Submit Button */}
-                    <Button className="text-black border" type="submit">{!loading ? "Submit" : "Loading..."}</Button>
+                    <button className="primarybutton" type="submit">{!loading ? "Submit" : "Loading..."}</button>
                 </form>
             </Form>
         );
@@ -294,7 +294,7 @@ Here are the answers you provided:
             <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg">
             <Toaster />
             {isModalOpen && (
-                <div className="fixed  inset-0 bg-[#0e314da3] bg-opacity-60 z-[100] flex justify-center ">
+                <div className="fixed  inset-0 bg-[#0e314da3] bg-opacity-60 z-[9999] flex justify-center ">
                     <div className="p-3 rounded-lg shadow-lg w-[30rem] bg-white mt-10 mb-2 max-h-[600px]">
                         <InquiryForm onClose={() => {
                             setIsModalOpen(false);
@@ -352,12 +352,12 @@ Here are the answers you provided:
                             </div>
                         ))}
                     </div>
-                    <Button
+                    <button
                         onClick={() => handleNextClick(questions[currentQuestionIndex]?.question)}
-                        className="text-black border px-4 py-2 rounded-lg hover:bg-[var(--rv-bg-primary)] hover:text-white w-1/3 "
+                        className="primarybutton w-1/3 "
                     >
                         Next
-                    </Button>
+                    </button>
                 </div>
             )}
         </div>

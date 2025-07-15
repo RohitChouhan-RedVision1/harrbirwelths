@@ -74,105 +74,115 @@ export default function Page() {
     }
   };
 
+  const chartConfig = {
+    invested: {
+        label: "Invested Amount",
+        color: "var(--rv-primary)",
+    },
+    return: {
+        label: "Resultant Amount",
+        color: "var(--rv-secondary)",
+    },
+}
+
+const chartConfig1 = {
+    investedAmount: {
+        label: "Invested Amount",
+        color: "var(--rv-primary)",
+    },
+    growth: {
+        label: "Resultant Amountt",
+        color: "var(--rv-secondary)",
+    },
+};
+
+
   return (
-    <div className="max-w-screen-xl mx-auto py-[30px] lg:py-[60px]">
+    <div className="">
+
+
+    <div className="max-w-screen-xl mx-auto main_section">
       <div className="">
-        <div className="mb-5 flex flex-col md:flex-row gap-5 justify-between">
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink href="/">Home</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink href="/tools/calculators">Tools</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink href="/tools/calculators">
-                  Calculators
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage>Stp Calculator</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-          <div className="flex justify-between gap-4">
-            <h2>Explore other calculators</h2>
-            <select
-              className="w-full border border-gray-500 rounded-lg p-2"
-              onChange={handleCalculatorChange}
-              defaultValue=""
-            >
-              <option value="" disabled>
-                Select
-              </option>
-              {calculators.map((calc) => (
-                <option key={calc.title} value={calc.route}>
-                  {calc.title}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
+         <div className="mb-5 flex flex-col md:flex-row gap-5 justify-between">
+                  <div className="">
+                    <span className="text-2xl md:text-3xl font-bold uppercase">
+                      STP Calculator
+                    </span>
+                  </div>
+                  <div className="flex justify-between gap-4">
+                    <span>Explore other calculators</span>
+                    <select
+                      className="w-full border border-gray-500 rounded-lg p-2"
+                      onChange={handleCalculatorChange}
+                      defaultValue=""
+                    >
+                      <option value="" disabled>
+                        Select
+                      </option>
+                      {calculators.map((calc) => (
+                        <option key={calc.title} value={calc.route}>
+                          {calc.title}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
         <div>
           {isAuthorised ? (
             <div>
-              <div className="mb-10">
-                <h1 className="text-3xl md:text-4xl font-bold text-gray-800">
-                  STP Calculator
-                </h1>
-              </div>
+           
               <div className="grid lg:grid-cols-2 grid-cols-1 gap-4 mb-4">
                 <div className="col-span-1 border border-gray-200 rounded-2xl bg-white p-5">
                   <div className="input-fields mt-5 mb-10">
                     <div className="items-center mt-5">
                       <div className="flex justify-between">
-                        <h1>I want to invest in Source Fund</h1>
+                        <span>I want to invest in Source Fund (₹)</span>
                         <div>
-                          <span className="font-semibold text-green-700">
-                            ₹
-                          </span>
+                         
                           <input
                             type="number"
+                            placeholder="0"
                             value={sourceFundAmount}
                             onChange={(e) =>
                               setSourceFundAmount(parseFloat(e.target.value))
                             }
-                            className="font-semibold text-green-700 w-24 border-none"
+                            className="font-semibold text-[var(--rv-primary)] w-36  border px-2 py-2 rounded"
                           />
                         </div>
                       </div>
                       <Input
                         type="range"
-                        min="10000"
+                        min="500"
                         max="10000000"
                         step="500"
-                        value={sourceFundAmount}
+                        value={isNaN(sourceFundAmount) ? 0 : sourceFundAmount}
                         onChange={(e) =>
                           setSourceFundAmount(parseFloat(e.target.value))
                         }
-                        className="w-full text-gray-400"
+                        className="customRange w-full"
+                        style={{
+                          "--progress": `${(((isNaN(sourceFundAmount) ? 0 : sourceFundAmount) - 500) /
+                            (10000000 - 500)) *
+                            100}%`,
+                        }}
                       />
                     </div>
                     <div className="items-center mt-5">
                       <div className="flex justify-between mt-5">
-                        <h1>I want to transfer to Destination Fund</h1>
+                        <span>I want to transfer to Destination Fund (₹)</span>
                         <div>
-                          <span className="font-semibold text-green-700">
-                            ₹
-                          </span>
+                          
                           <input
                             type="number"
+                            placeholder="0"
+
                             value={transferToFundAmount}
                             onChange={(e) =>
                               setTransferToFundAmount(
                                 parseFloat(e.target.value)
                               )
                             }
-                            className="font-semibold text-green-700 w-24 border-none"
+                            className="font-semibold text-[var(--rv-primary)] w-36  border px-2 py-2 rounded"
                           />
                         </div>
                       </div>
@@ -180,24 +190,32 @@ export default function Page() {
                         type="range"
                         min="500"
                         max="1000000"
+                        
                         step="500"
-                        value={transferToFundAmount}
+                        value={isNaN(transferToFundAmount) ? 0 : transferToFundAmount}
                         onChange={(e) =>
                           setTransferToFundAmount(parseFloat(e.target.value))
                         }
-                        className="w-full text-gray-400"
+                        className="customRange w-full"
+                        style={{
+                          "--progress": `${(((isNaN(transferToFundAmount) ? 0 : transferToFundAmount) - 500) /
+                            (1000000 - 500)) *
+                            100}%`,
+                        }}
                       />
                     </div>
                     <div className="items-center mt-5">
                       <div className="flex justify-between mt-5">
-                        <h1>For a period of (years)</h1>
+                        <span>For a period of (years)</span>
                         <input
                           type="number"
                           value={transferPeriod}
+                            placeholder="0"
+
                           onChange={(e) =>
                             setTransferPeriod(parseFloat(e.target.value))
                           }
-                          className="font-semibold text-green-700 w-10 border-none"
+                          className="font-semibold text-[var(--rv-primary)] w-20 border px-2 py-2 rounded"
                         />
                       </div>
                       <Input
@@ -205,23 +223,30 @@ export default function Page() {
                         min="1"
                         max="30"
                         step="1"
-                        value={transferPeriod}
+                        value={isNaN(transferPeriod) ? 0 : transferPeriod}
                         onChange={(e) =>
                           setTransferPeriod(parseFloat(e.target.value))
                         }
-                        className="w-full text-gray-400"
+                        className="customRange w-full"
+                        style={{
+                          "--progress": `${(((isNaN(transferPeriod) ? 0 : transferPeriod) - 1) /
+                            (30 - 1)) *
+                            100}%`,
+                        }}
                       />
                     </div>
                     <div className="items-center mt-5">
                       <div className="flex justify-between mt-5">
-                        <h1>Expected Rate of Return from Source Fund (%)</h1>
+                        <span>Expected Rate of Return from Source Fund (%)</span>
                         <input
                           type="number"
+                            placeholder="0"
+
                           value={expectedReturnSource}
                           onChange={(e) =>
                             setExpectedReturnSource(parseFloat(e.target.value))
                           }
-                          className="font-semibold text-green-700 w-10 border-none"
+                          className="font-semibold text-[var(--rv-primary)] w-20 border px-2 py-2 rounded"
                         />
                       </div>
                       <Input
@@ -229,27 +254,34 @@ export default function Page() {
                         min="1"
                         max="30"
                         step="1"
-                        value={expectedReturnSource}
+                        value={isNaN(expectedReturnSource) ? 0 : expectedReturnSource}
                         onChange={(e) =>
                           setExpectedReturnSource(parseFloat(e.target.value))
                         }
-                        className="w-full text-gray-400"
+                        className="customRange w-full"
+                        style={{
+                          "--progress": `${(((isNaN(expectedReturnSource) ? 0 : expectedReturnSource) - 1) /
+                            (30 - 1)) *
+                            100}%`,
+                        }}
                       />
                     </div>
                     <div className="items-center mt-5">
                       <div className="flex justify-between mt-5">
-                        <h1>
+                        <span>
                           Expected Rate of Return from Destination Fund (%)
-                        </h1>
+                        </span>
                         <input
                           type="number"
+                            placeholder="0"
+
                           value={expectedReturnDestination}
                           onChange={(e) =>
                             setExpectedReturnDestination(
                               parseFloat(e.target.value)
                             )
                           }
-                          className="font-semibold text-green-700 w-10 border-none"
+                          className="font-semibold text-[var(--rv-primary)] w-20 border px-2 py-2 rounded"
                         />
                       </div>
                       <Input
@@ -257,13 +289,18 @@ export default function Page() {
                         min="1"
                         max="30"
                         step="1"
-                        value={expectedReturnDestination}
+                        value={isNaN(expectedReturnDestination) ? 0 : expectedReturnDestination}
                         onChange={(e) =>
                           setExpectedReturnDestination(
                             parseFloat(e.target.value)
                           )
                         }
-                        className="w-full text-gray-400"
+                        className="customRange w-full"
+                        style={{
+                          "--progress": `${(((isNaN(expectedReturnDestination) ? 0 : expectedReturnDestination) - 1) /
+                            (30 - 1)) *
+                            100}%`,
+                        }}
                       />
                     </div>
                   </div>
@@ -312,8 +349,11 @@ export default function Page() {
                       invested: "Household Expenses",
                       return: "Loan Repayment",
                     }}
+                    chartConfig={chartConfig}
+        
                   />
                   <CalculatorReturnChart
+                  chartConfig={chartConfig1}
                     data={chartData}
                     title={"STP Calculator"}
                   />
@@ -330,6 +370,7 @@ export default function Page() {
           )}
         </div>
       </div>
+    </div>
     </div>
   );
 }

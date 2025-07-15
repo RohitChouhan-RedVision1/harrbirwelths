@@ -190,7 +190,7 @@ export default function Page() {
 
     try {
       const response = await axios.post(
-        `${process?.env?.NEXT_PUBLIC_DATA_API}/api/research-calculator/sip-performance`,
+        `${process.env.NEXT_PUBLIC_DATA_API}/api/research-calculator/sip-performance`,
         {
           startDate: startsipDate,
           endDate: endsipDate,
@@ -200,8 +200,8 @@ export default function Page() {
         }
       );
 
-      console.log("Response:", response.data);
-      console.log("Data field:", response.data.data);
+      // console.log("Response:", response.data);
+      // console.log("Data field:", response.data.data);
 
       if (response.data.data == null || Object.keys(response.data.data).length === 0) { // Checks for null or undefined
         setGraphData(false);
@@ -226,7 +226,7 @@ export default function Page() {
   };
 
   const handlePdf = async (result, title, startsipDate, valuationDate) => {
-    console.log(result)
+    // console.log(result)
     generatePDF(result, title, startsipDate, valuationDate, "graphId", siteData,);
   };
 
@@ -239,7 +239,9 @@ export default function Page() {
           </h1>
         </div>
       </div>
-      <div className="px-3 lg:px-2 max-w-screen-xl mx-auto py-[30px] md:py-[60px]">
+     
+      <div className="px-3 lg:px-2 max-w-screen-xl mx-auto main_section">
+      
         <Toaster />
         <div>
           <div>
@@ -304,7 +306,7 @@ export default function Page() {
                         <p className="font-semibold text-gray-700">
                           Select Equity Funds
                         </p>
-                        {console.log(assetCategory)}
+                        {/* {console.log(assetCategory)} */}
                         <div className="mt-2 border border-gray-300 p-3 rounded h-60 overflow-y-auto">
                           {/* Equity Funds checkboxes here */}
                           {assetCategory
@@ -423,7 +425,7 @@ export default function Page() {
                     </div>
                   )}
                 </div>
-                <hr />
+              
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                   <div className="mb-4">
                     <label
@@ -496,7 +498,7 @@ export default function Page() {
                       htmlFor="schemeDate"
                       className="text-sm block font-semibold text-gray-700 mb-1"
                     >
-                     Start Date
+                      Start Date
                     </label>
                     <input
                       type="date"
@@ -630,7 +632,7 @@ export default function Page() {
                   </div>
                 )
               )}
-              {console.log(error)}
+              {/* {console.log(error)} */}
               {error && !graphData && (
                 <div className="">
                   Data Not Found

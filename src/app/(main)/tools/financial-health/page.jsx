@@ -121,10 +121,10 @@ const FinancialHealth = () => {
               <FormItem>
                 <FormControl>
                   <Input
-                    placeholder="User Name"
+                    placeholder="User Name*"
                     {...field}
                     aria-label="User Name"
-                    className="border-2 border-gray-500"
+                    className="border-2 border-gray-500 bg-[#E7EBEF] placeholder-red-600 text-black"
                   />
                 </FormControl>
                 <FormMessage />
@@ -140,10 +140,10 @@ const FinancialHealth = () => {
               <FormItem>
                 <FormControl>
                   <Input
-                    placeholder="Mobile"
+                    placeholder="Mobile*"
                     {...field}
                     aria-label="Mobile Number"
-                    className="border-2 border-gray-500"
+                    className="border-2 border-gray-500 bg-[#E7EBEF] placeholder-red-600 text-black"
                   />
                 </FormControl>
                 <FormMessage />
@@ -160,10 +160,10 @@ const FinancialHealth = () => {
                 <FormControl>
                   <Input
                     type="email"
-                    placeholder="Email"
+                    placeholder="Email*"
                     {...field}
                     aria-label="Email"
-                    className="border-2 border-gray-500"
+                    className="border-2 border-gray-500 bg-[#E7EBEF] placeholder-red-600 text-black"
                   />
                 </FormControl>
                 <FormMessage />
@@ -181,7 +181,7 @@ const FinancialHealth = () => {
                   <textarea
                     placeholder="Message"
                     {...field}
-                    className="w-full border-2 border-gray-500 p-1 rounded"
+                    className="w-full p-2 border-2 border-gray-500 bg-[#E7EBEF] rounded placeholder-red-600 text-black"
                     aria-label="Message"
                   />
                 </FormControl>
@@ -202,9 +202,9 @@ const FinancialHealth = () => {
           </div>
 
           {/* Submit Button */}
-          <Button className="text-black" type="submit" disabled={loading}>
+          <button className="primarybutton" type="submit" disabled={loading}>
             {!loading ? "Submit" : "Loading..."}
-          </Button>
+          </button>
         </form>
       </Form>
     );
@@ -440,14 +440,14 @@ Here are the answers you provided:
               </label>
             </div>
           </div>
-          <Button
+          <button
             onClick={() =>
               handleNextClick(questions[currentQuestionIndex]?.question)
             }
-            className="text-black border px-4 py-2 rounded-lg hover:bg-[var(--rv-bg-primary)] hover:text-white w-1/3 "
+            className="primarybutton w-1/3 "
           >
             Next
-          </Button>
+          </button>
         </div>
       )}
     </div>

@@ -57,63 +57,58 @@ export default function Page() {
         }
     };
 
+
+const chartConfig1 = {
+    investedAmount: {
+        label: "Principal Amount",
+        color: "var(--rv-primary)",
+    },
+    growth: {
+        label: "Intrest Amount",
+        color: "var(--rv-secondary)",
+    },
+};
+
     return (
-        <div  className="max-w-screen-xl mx-auto py-[30px] lg:py-[60px]">
         <div className="">
-            <div className="mb-5 flex flex-col md:flex-row gap-5 justify-between">
-                <Breadcrumb>
-                    <BreadcrumbList>
-                        <BreadcrumbItem>
-                            <BreadcrumbLink href="/">Home</BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <BreadcrumbLink href="/tools/calculators">Tools</BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <BreadcrumbLink href="/tools/calculators">Calculators</BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <BreadcrumbPage>EMI Calculator</BreadcrumbPage>
-                        </BreadcrumbItem>
-                    </BreadcrumbList>
-                </Breadcrumb>
-                <div className="flex justify-between gap-4">
-                    <h2>Explore other calculators</h2>
-                    <select
-                        className="w-full border border-gray-500 rounded-lg p-2"
-                        onChange={handleCalculatorChange}
-                        defaultValue=""
-                    >
-                        <option value="" disabled>
+        <div  className="max-w-screen-xl mx-auto main_section">
+        <div className="">
+              <div className="mb-5 flex flex-col md:flex-row gap-5 justify-between ">
+                      <div className="">
+                        <span className="text-2xl md:text-3xl font-bold uppercase">
+                          EMI Calculator
+                        </span>
+                      </div>
+                      <div className="flex justify-between gap-4">
+                        <span>Explore other calculators</span>
+                        <select
+                          className="w-full border border-gray-500 rounded-lg p-2"
+                          onChange={handleCalculatorChange}
+                          defaultValue=""
+                        >
+                          <option value="" disabled>
                             Select
-                        </option>
-                        {calculators.map((calc) => (
+                          </option>
+                          {calculators.map((calc) => (
                             <option key={calc.title} value={calc.route}>
-                                {calc.title}
+                              {calc.title}
                             </option>
-                        ))}
-                    </select>
-                </div>
-            </div>
-            <div className="mb-10">
-                <h1 className=" text-3xl md:text-4xl font-bold text-gray-800">
-                    EMI Calculator
-                </h1>
-            </div>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
             <div className="grid lg:grid-cols-2 grid-cols-1 gap-4 mb-4">
                 <div className="col-span-1 border border-gray-200 rounded-2xl bg-white p-5">
                     <div className="input-fields mt-5 mb-10">
                         <div className="mb-5">
                             <div className="flex justify-between">
-                                <h1>Loan Amount (₹)</h1>
+                                <span>Loan Amount (₹)</span>
                                 <input
                                     type="number"
                                     value={loanAmount}
+                                    placeholder="0"
                                     onChange={(e) => setLoanAmount(parseFloat(e.target.value))}
-                                    className="font-semibold text-green-700 w-24 border-none"
+                                    className="font-semibold text-[var(--rv-primary)] w-36 border px-2 py-2 rounded"
                                 />
                             </div>
                             <Input
@@ -121,19 +116,27 @@ export default function Page() {
                                 min="100000"
                                 max="100000000"
                                 step="1000"
-                                value={loanAmount}
+                                value={isNaN(loanAmount) ? 0 : loanAmount}
                                 onChange={(e) => setLoanAmount(parseFloat(e.target.value))}
-                                className="w-full text-gray-400"
+                                 className="customRange w-full"
+                        style={{
+                          "--progress":
+                            (((isNaN(loanAmount) ? 0 : loanAmount) - 1000000) /
+                              (100000000 - 1000000)) *
+                              100 +
+                            "%",
+                        }}
                             />
                         </div>
                         <div className="mb-5">
                             <div className="flex justify-between">
-                                <h1>Loan Tenure (Years)</h1>
+                                <span>Loan Tenure (Years)</span>
                                 <input
                                     type="number"
                                     value={loanTenure}
+                                    placeholder="0"
                                     onChange={(e) => setLoanTenure(parseFloat(e.target.value))}
-                                    className="font-semibold text-green-700 w-10 border-none"
+                                    className="font-semibold text-[var(--rv-primary)] w-20 border px-2 py-2 rounded"
                                 />
                             </div>
                             <Input
@@ -141,19 +144,27 @@ export default function Page() {
                                 min="1"
                                 max="40"
                                 step="1"
-                                value={loanTenure}
+                                value={isNaN(loanTenure) ? 0 : loanTenure}
                                 onChange={(e) => setLoanTenure(parseFloat(e.target.value))}
-                                className="w-full text-gray-400"
+                                 className="customRange w-full"
+                        style={{
+                          "--progress":
+                            (((isNaN(loanTenure) ? 0 : loanTenure) - 1) /
+                              (40 - 1)) *
+                              100 +
+                            "%",
+                        }}
                             />
                         </div>
                         <div className="mb-5">
                             <div className="flex justify-between">
-                                <h1>Interest Rate (%)</h1>
+                                <span>Interest Rate (%)</span>
                                 <input
                                     type="number"
+                                    placeholder="0"
                                     value={interestRate}
                                     onChange={(e) => setInterestRate(parseFloat(e.target.value))}
-                                    className="font-semibold text-green-700 w-10 border-none"
+                                    className="font-semibold text-[var(--rv-primary)] w-20 border px-2 py-2 rounded"
                                 />
                             </div>
                             <Input
@@ -163,7 +174,14 @@ export default function Page() {
                                 step="0.1"
                                 value={interestRate}
                                 onChange={(e) => setInterestRate(parseFloat(e.target.value))}
-                                className="w-full text-gray-400"
+                                 className="customRange w-full"
+                        style={{
+                          "--progress":
+                            (((isNaN(interestRate) ? 0 : interestRate) - 1) /
+                              (30 - 1)) *
+                              100 +
+                            "%",
+                        }}
                             />
                         </div>
                     </div>
@@ -173,7 +191,7 @@ export default function Page() {
                             <div className="">
                                 <div className="mb-4 text-center flex justify-between">
                                     <h2 className="text-2xl font-bold text-gray-700">Loan EMI</h2>
-                                    <p className="text-xl font-extrabold text-[#00aeef]">₹{emi.toLocaleString()}</p>
+                                    <p className="text-2xl font-extrabold text-[var(--rv-primary)]">₹{emi.toLocaleString()}</p>
                                 </div>
                                 <div className="mb-4 text-center flex justify-between">
                                     <p className="text-lg text-gray-600">Principal Loan Amount</p>
@@ -195,12 +213,14 @@ export default function Page() {
                     <EmipieChart
                         piedata={result}
                         title={"EMI Breakdown"}
+                       
                     />
                     <div className="mt-5">
-                        <CalculatorReturnChart data={chartData} title={'EMI Breakdown'} />
+                        <CalculatorReturnChart chartConfig={chartConfig1} data={chartData} title={'EMI Breakdown'} />
                     </div>
                 </div>
             </div>
+        </div>
         </div>
         </div>
     );

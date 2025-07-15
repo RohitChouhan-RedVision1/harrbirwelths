@@ -60,14 +60,38 @@ export default function DelayCostCalculator() {
     }
   };
 
+  
+  const chartConfig = {
+    invested: {
+        label: "Total Value",
+        color: "var(--rv-primary)",
+    },
+    return: {
+        label: "Future Value without Delay",
+        color: "var(--rv-secondary)",
+    },
+}
+
+const chartConfig1 = {
+    investedAmount: {
+        label: "Total Value",
+        color: "var(--rv-primary)",
+    },
+    growth: {
+        label: "Future Value without Delay",
+        color: "var(--rv-secondary)",
+    },
+};
+
   return (
-    <div className="max-w-screen-xl mx-auto py-[30px] lg:py-[60px]">
+    <div className="">
+    <div className="max-w-screen-xl mx-auto main_section">
       <div className="">
         <div className="mb-5 flex flex-col md:flex-row gap-5 justify-between">
           <div className="">
-            <h3 className="text-2xl md:text-3xl font-bold uppercase">
+            <span className="text-2xl md:text-3xl font-bold uppercase">
               Delay Cost Calculator
-            </h3>
+            </span>
           </div>
           <div className="flex justify-between gap-4">
             <span>Explore other calculators</span>
@@ -95,17 +119,18 @@ export default function DelayCostCalculator() {
                   <div className="input-fields mt-5 mb-10">
                     {/* Monthly SIP */}
                     <div className="flex justify-between">
-                      <h3>Monthly SIP (₹)</h3>
+                      <span>Monthly SIP (₹)</span>
                       <div>
                         <input
                           type="number"
                           value={monthlySIP}
+                          placeholder="0"
                           onChange={(e) =>
                             setMonthlySIP(
                               parseFloat(e.target.value.replace(/,/g, ""))
                             )
                           }
-                          className="font-semibold text-green-700 w-20 border-none"
+                          className="font-semibold text-var(--rv-primary) w-36 border px-2 py-2 rounded"
                         />
                       </div>
                     </div>
@@ -114,7 +139,7 @@ export default function DelayCostCalculator() {
                       min="500"
                       max="100000"
                       step="500"
-                      value={monthlySIP}
+                      value={monthlySIP||0}
                       onChange={(e) =>
                         setMonthlySIP(parseFloat(e.target.value))
                       }
@@ -129,40 +154,15 @@ export default function DelayCostCalculator() {
                     {/* Time Period */}
                     <div className="items-center mt-5">
                       <div className="flex justify-between">
-                        <h3>Time Period (Years)</h3>
+                        <span>Time Period (Years)</span>
                         <input
                           type="number"
+                          placeholder="0"
                           value={timePeriod}
                           onChange={(e) =>
                             setTimePeriod(parseFloat(e.target.value))
                           }
-                          className="font-semibold text-green-700 w-10 border-none"
-                        />
-                      </div>
-                      <input
-                        type="range"
-                        min="1"
-                        max="30"
-                        step="1"
-                        value={timePeriod}
-                        onChange={(e) =>
-                          setTimePeriod(parseFloat(e.target.value))
-                        }
-                        className="w-full accent-[--rv-primary] text-gray-400"
-                      />
-                    </div>
-
-                    {/* Rate of Return */}
-                    <div className="items-center mt-5">
-                      <div className="flex justify-between">
-                        <h3>Expected Return (%)</h3>
-                        <input
-                          type="number"
-                          value={expectedReturn}
-                          onChange={(e) =>
-                            setExpectedReturn(parseFloat(e.target.value))
-                          }
-                          className="font-semibold text-green-700 w-10 border-none"
+                          className="font-semibold text-var(--rv-primary) w-20 border px-2 py-2 rounded"
                         />
                       </div>
                       <Input
@@ -170,7 +170,38 @@ export default function DelayCostCalculator() {
                         min="1"
                         max="30"
                         step="1"
-                        value={expectedReturn}
+                        value={timePeriod||0}
+                        onChange={(e) =>
+                          setTimePeriod(parseFloat(e.target.value))
+                        }
+                        style={{
+                          "--progress": `${
+                            ((timePeriod - 1) / (30 - 1)) * 100
+                          }%`,
+                        }}
+                      />
+                    </div>
+
+                    {/* Rate of Return */}
+                    <div className="items-center mt-5">
+                      <div className="flex justify-between">
+                        <span>Expected Return (%)</span>
+                        <input
+                          type="number"
+                          value={expectedReturn}
+                          placeholder="0"
+                          onChange={(e) =>
+                            setExpectedReturn(parseFloat(e.target.value))
+                          }
+                          className="font-semibold text-var(--rv-primary) w-20 border px-2 py-2 rounded"
+                        />
+                      </div>
+                      <Input
+                        type="range"
+                        min="1"
+                        max="30"
+                        step="1"
+                        value={expectedReturn||0}
                         onChange={(e) =>
                           setExpectedReturn(parseFloat(e.target.value))
                         }
@@ -186,14 +217,15 @@ export default function DelayCostCalculator() {
                     {/* Delay in SIP */}
                     <div className="items-center mt-5">
                       <div className="flex justify-between">
-                        <h3>Delay in Starting SIP (Months)</h3>
+                        <span>Delay in Starting SIP (Months)</span>
                         <input
                           type="number"
                           value={delayMonths}
+                          placeholder="0"
                           onChange={(e) =>
                             setDelayMonths(parseFloat(e.target.value))
                           }
-                          className="font-semibold text-green-700 w-10 border-none"
+                          className="font-semibold text-var(--rv-primary) w-20 border px-2 py-2 rounded"
                         />
                       </div>
                       <Input
@@ -201,7 +233,7 @@ export default function DelayCostCalculator() {
                         min="0"
                         max="24"
                         step="1"
-                        value={delayMonths}
+                        value={delayMonths||0}
                         onChange={(e) =>
                           setDelayMonths(parseFloat(e.target.value))
                         }
@@ -250,20 +282,14 @@ export default function DelayCostCalculator() {
                 <SippieChart
                   piedata={result}
                   title={"Delay Planning Projection"}
-                  customLabels={{
-                    invested: "Total Value",
-                    return: "Future Value without Delay",
-                  }}
+                 
+                  chartConfig={chartConfig}
                 />
                 <div className="mt-5">
                   <CalculatorReturnChart
                     data={chartData}
-                    chartType="line"
-                    customLabels={{
-                      xLabel: "Years",
-                      yLabel: "Amount (₹)",
-                    }}
-                    chartTitle="Delay Planning Projection"
+                    
+                    chartConfig={chartConfig1}
                   />
                 </div>
               </div>
@@ -271,6 +297,7 @@ export default function DelayCostCalculator() {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 }

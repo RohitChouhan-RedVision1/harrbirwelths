@@ -55,9 +55,9 @@ export default function Page() {
 
   const setDuration = (years) => {
     const parsedYears = parseFloat(years);
-    if (!isNaN(parsedYears)) {
+    // if (!isNaN(parsedYears)) {
       setInvestmentDuration(parsedYears);
-    }
+    // }
   };
   const handleCalculatorChange = (e) => {
     const selectedRoute = e.target.value;
@@ -66,13 +66,36 @@ export default function Page() {
     }
   };
 
+  const chartConfig = {
+    invested: {
+        label: "Total Investment",
+        color: "var(--rv-primary)",
+    },
+    return: {
+        label: "Future Value",
+        color: "var(--rv-secondary)",
+    },
+}
+
+const chartConfig1 = {
+    investedAmount: {
+        label: "Total Investment",
+        color: "var(--rv-primary)",
+    },
+    growth: {
+        label: "Future Value",
+        color: "var(--rv-secondary)",
+    },
+};
+
   return (
-    <div className="max-w-screen-xl mx-auto py-[30px] lg:py-[60px]">
+    <div className="">
+    <div className="max-w-screen-xl mx-auto main_section">
       <div className="">
         <div className="mb-5 flex flex-col md:flex-row gap-5 justify-between">
-          <h3 className="text-2xl md:text-3xl font-bold uppercase">
+          <span className="text-2xl md:text-3xl font-bold uppercase">
             Lumpsum Calculator
-          </h3>
+          </span>
           <div className="flex justify-between gap-4">
             <span>Explore other calculators</span>
             <select
@@ -99,46 +122,46 @@ export default function Page() {
                   <div className="input-fields mt-5 mb-10">
                     <div>
                       <div className="flex justify-between">
-                        <h3>Total investment</h3>
+                        <span>Total investment(₹)</span>
                         <div>
-                          <span className="font-semibold text-green-700">
-                            ₹
-                          </span>
+                          
                           <input
                             type="number" // Change type to number for better input handling
                             value={oneTimeInvestment}
+                            placeholder="0"
                             onChange={(e) =>
                               setOneTimeInvestment(parseFloat(e.target.value))
                             }
-                            className="font-semibold text-green-700 w-14 border-none"
+                            className="font-semibold text-[var(--rv-primary)]  w-36  border px-2 py-2 rounded"
                           />
                         </div>
                       </div>
                       <Input
                         type="range"
                         min="500"
-                        max="50000"
-                        step="500"
-                        value={oneTimeInvestment}
+                        max="1000000"
+                        step="100"
+                        value={isNaN(oneTimeInvestment) ? 0 : oneTimeInvestment||0}
                         onChange={(e) =>
                           setOneTimeInvestment(parseFloat(e.target.value))
                         }
                         className="customRange w-full"
                         style={{
                           "--progress": `${
-                            ((oneTimeInvestment - 500) / (50000 - 500)) * 100
+                            (((isNaN(oneTimeInvestment) ? 0 : oneTimeInvestment) - 100) / (1000000 - 100)) * 100
                           }%`,
                         }}
                       />
                     </div>
                     <div className="items-center mt-5">
                       <div className="flex justify-between">
-                        <h3>Time period (Year)</h3>
+                        <span>Time period (Year)</span>
                         <input
                           type="number" // Change type to number for better input handling
                           value={investmentDuration}
+                          placeholder="0"
                           onChange={(e) => setDuration(e.target.value)} // Update duration
-                          className="font-semibold text-green-700 w-5 border-none"
+                          className="font-semibold text-[var(--rv-primary)] w-20 border px-2 py-2 rounded"
                         />
                       </div>
                       <Input
@@ -146,12 +169,12 @@ export default function Page() {
                         min="1"
                         max="40"
                         step="1"
-                        value={investmentDuration}
+                        value={isNaN(investmentDuration) ? 0 : investmentDuration}
                         onChange={(e) => setDuration(Number(e.target.value))}
                         className="customRange w-full"
                         style={{
                           "--progress": `${
-                            ((investmentDuration - 1) / (40 - 1)) * 100
+                            (((isNaN(investmentDuration) ? 0 : investmentDuration) - 1) / (40 - 1)) * 100
                           }%`,
                         }}
                       />
@@ -159,12 +182,12 @@ export default function Page() {
 
                     <div className="items-center mt-5">
                       <div className="flex justify-between">
-                        <h3>Expected Return (%)</h3>
+                        <span>Expected Return (%)</span>
                         <input
                           type="number" // Change type to number for better input handling
                           value={expectedReturn}
                           onChange={(e) => setExpectedReturn(e.target.value)} // Update duration
-                          className="font-semibold text-green-700 w-5 border-none"
+                          className="font-semibold text-[var(--rv-primary)] w-20 border px-2 py-2 rounded"
                         />
                       </div>
                       <Input
@@ -172,14 +195,14 @@ export default function Page() {
                         min="1"
                         max="30"
                         step="1"
-                        value={expectedReturn}
+                        value={isNaN(expectedReturn) ? 0 : expectedReturn}
                         onChange={(e) =>
                           setExpectedReturn(Number(e.target.value))
                         }
                         className="customRange w-full"
                         style={{
                           "--progress": `${
-                            ((expectedReturn - 1) / (30 - 1)) * 100
+                            (((isNaN(expectedReturn) ? 0 : expectedReturn) - 1) / (30 - 1)) * 100
                           }%`,
                         }}
                       />
@@ -217,16 +240,17 @@ export default function Page() {
               </div>
               <div className="col-span-1">
                 <div className="mb-3">
-                  <SippieChart piedata={result} title={"Lumpsum Calculator"} />
+                  <SippieChart piedata={result} title={"Lumpsum Calculator"} chartConfig={chartConfig} />
                 </div>
                 <div>
-                  <CalculatorReturnChart data={chartdata} title="Lumpsum" />
+                  <CalculatorReturnChart data={chartdata} title="Lumpsum" chartConfig={chartConfig1}/>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 }
