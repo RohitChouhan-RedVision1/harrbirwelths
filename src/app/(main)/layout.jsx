@@ -17,7 +17,7 @@ export default async function Layout({ children }) {
        const socialmedialinks=await getSocialMedia()
     return (
         <div className="">
-            <Tickers/>
+            {/* <Tickers/> */}
             <Navbar services={servicedata} socialmedialinks={socialmedialinks}/>
             {children}
             <Footer sitedata={sitedata} servicedata={servicedata} arn={arn} socialmedialinks={socialmedialinks} />

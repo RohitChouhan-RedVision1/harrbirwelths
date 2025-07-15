@@ -35,6 +35,8 @@ export function Navbar({ services }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showLoginDropdown, setShowLoginDropdown] = useState(false);
+const [showMobileLoginDropdown, setShowMobileLoginDropdown] = useState(false);
 
  useEffect(() => {
   const handleScroll = () => {
@@ -69,7 +71,7 @@ export function Navbar({ services }) {
       if (response.status === 200) {
         const data = response.data.data;
         const filteredResults = data.filter((item) =>
-          item.funddes.toLowerCase().includes(searchQuery.toLowerCase())
+          item.funddes.toLowerCase().includes(query.toLowerCase())
         );
         setSearchResults(filteredResults);
         setIsSearchOpen(true);
@@ -251,10 +253,38 @@ export function Navbar({ services }) {
             </Menu>
           )}
         </div>
-        <Link href="/login">
-        <button className="primarybutton hidden lg:block">
-          Login
-        </button></Link>
+     <div
+  className="relative hidden lg:block"
+  onMouseEnter={() => setShowLoginDropdown(true)}
+  onMouseLeave={() => setShowLoginDropdown(false)}
+>
+  <button className="primarybutton p-4">
+    Login
+  </button>
+
+  {showLoginDropdown && (
+    <div className="absolute right-0 mt-0 w-48 bg-white border rounded-lg shadow-lg z-50">
+      <Link
+        href="/login/client"
+        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+      >
+        Client Login
+      </Link>
+      <Link
+        href="/login/employee"
+        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+      >
+        Employee Login
+      </Link>
+      <Link
+        href="/login/admin"
+        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+      >
+        Admin Login
+      </Link>
+    </div>
+  )}
+</div>
         <div className="flex items-center gap-4 lg:hidden">
           {/* Search Icon */}
           {!isSearchOpen ? (
@@ -464,7 +494,20 @@ export function Navbar({ services }) {
 <HoveredLink href="/blogs">Blogs</HoveredLink>
               <HoveredLink href="/about-us">About Us</HoveredLink>
               <HoveredLink href="/contact-us">Contact Us</HoveredLink>
-              <HoveredLink href="/login">Login</HoveredLink>
+              <button
+  onClick={() => setShowLoginDropdown((prev) => !prev)}
+  className="text-left text-[var(--rv-secondary)] font-semibold hover:text-[var(--rv-primary)]"
+>
+  Login
+</button>
+
+{showLoginDropdown && (
+  <div className="ml-4 flex flex-col space-y-2 text-sm">
+    <HoveredLink href="/login/client">Client Login</HoveredLink>
+    <HoveredLink href="/login/employee">Employee Login</HoveredLink>
+    <HoveredLink href="/login/admin">Admin Login</HoveredLink>
+  </div>
+)}
             </nav>
           </div>
         )}

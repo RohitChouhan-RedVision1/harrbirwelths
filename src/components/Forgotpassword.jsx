@@ -82,7 +82,7 @@ export default function ForgotPasswordModal({ isOpen, onClose,logintype }) {
           )}
           <button
             type="submit"
-            className="mt-5 w-full bg-[var(--primary)] text-white py-2 rounded hover:scale-105 transition-transform"
+            className="mt-5 w-full bg-[var(--rv-secondary)] text-white py-2 rounded hover:scale-105 transition-transform"
           >
             Submit
           </button>

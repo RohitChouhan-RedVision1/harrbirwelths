@@ -177,21 +177,7 @@ const Footer = ({ sitedata, servicedata, arn, socialmedialinks }) => {
             </ul>
           </div>
         </div>
-        <div className="flex gap-x-3 justify-center">
-          {socialmedialinks
-            .filter((link) => !link.isHidden)
-            .map((link, index) => (
-              <Link key={index} target="_blank" href={link.url}>
-                <div
-                  className={`text-2xl font-semibold uppercase w-9 h-9 border bg-white rounded-full flex items-center justify-center `}
-                >
-                  {iconMap[link.title] || (
-                    <FaXTwitter className="text-[var(--rv-primary)]" />
-                  )}
-                </div>
-              </Link>
-            ))}
-        </div>
+        {/*                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 */}
         <div className="text-gray-50 py-3 md:px-1 px-4 text-center">
           <p className="py-1 text-center">
             {sitedata?.websiteName} is an AMFI Registered Mutual Fund
@@ -244,7 +230,22 @@ const Footer = ({ sitedata, servicedata, arn, socialmedialinks }) => {
             </Link>
             . All Rights Reserved.
           </p>
-          <ul className="flex flex-wrap items-center mt-3  sm:mt-0">
+          <div className="flex gap-x-3 justify-center">
+          {socialmedialinks
+            .filter((link) => !link.isHidden)
+            .map((link, index) => (
+              <Link key={index} target="_blank" href={link.url}>
+                <div
+                  className={`text-2xl font-semibold uppercase w-9 h-9 border bg-white rounded-full flex items-center justify-center `}
+                >
+                  {iconMap[link.title] || (
+                    <FaXTwitter className="text-[var(--rv-primary)]" />
+                  )}
+                </div>
+              </Link>
+            ))}
+        </div>
+          <ul className="flex flex-wrap items-center mt-3  sm:mt-0  hidden">
             <li>
               <Link
                 target="_blank"

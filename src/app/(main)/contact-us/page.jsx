@@ -1,70 +1,349 @@
-import ContactForm from "@/components/ContactUs/contactform";
-import ContactReusableForm from "@/components/landing/contactSection/Contactreusableform";
-import ContactUsFormSection from "@/components/landing/contactSection/contactSection";
-import { getSiteData } from "@/lib/functions";
-import { MapPin, Phone, Mail } from "lucide-react";
+"use client";
+import { InputForm } from "@/components/contactform";
+import React, { useEffect, useState } from "react";
+import { IoCall, IoLocationSharp, IoMail } from "react-icons/io5";
+import Image from "next/image";
+import styles from "./contact.module.css";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+  BreadcrumbPage,
+} from "@/components/ui/breadcrumb";
 import Link from "next/link";
-export default async function ContactUs() {
-  const sitedata = await getSiteData();
+import HCaptcha from "@hcaptcha/react-hcaptcha";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import SectionHeading from "@/components/landing/sectionHeading";
 
+const ContactUs = () => {
+  const [mainData, setMainData] = useState("");
+  const [services, setServices] = useState([]);
+    const [hcaptchaToken, setHcaptchaToken] = useState("");
+    const router = useRouter();
+
+
+  const [formData, setFormData] = useState({
+    username: "",
+    mobile: "",
+    email: "",
+    message: "",
+  });
+  const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+     if (!hcaptchaToken) {
+      alert("Please complete the captcha verification.");
+      return;
+    }
+
+    setLoading(true);
+
+    const emailContent =
+      "We’re excited to help you reach your financial goals.";
+
+    const emailData = {
+      to: formData.email,
+      subject: "Thank You for Your Enquiry!",
+      text: `Dear ${formData.username},\n\nWe sincerely appreciate your interest and the time you took to fill out our enquiry form. We have received your details, and our team will be in touch with you soon.\n\n${emailContent}`,
+    };
+
+    const senderData = {
+      to: mainData?.email,
+      subject: "New Enquiry Received",
+      text: `New Enquiry from Contact Us:\n\nUser Name: ${formData.username}\nEmail: ${formData.email}\nMobile: ${formData.mobile}\nMessage: ${formData.message}\n\n${emailContent}`,
+    };
+
+    try {
+      const res = await axios.post("/api/leads", formData);
+
+      if (res.status === 201) {
+        await axios.post("/api/email", emailData);
+        await axios.post("/api/email", senderData);
+
+        setSubmitted(true);
+        setFormData({
+          username: "",
+          mobile: "",
+          email: "",
+          message: "",
+        });
+          router.push("/thankyou");
+      } else {
+        alert("Something went wrong.");
+      }
+    } catch (error) {
+      console.error("Submission error:", error);
+      alert("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchdata = async () => {
+    const data = await fetch("/api/admin/site-settings", {
+      cache: "force-cache",
+    });
+    if (data.ok) {
+      const maindata = await data.json();
+      setMainData(maindata[0]);
+    }
+  };
+  const fetchservice = async () => {
+    const res = await fetch("/api/services");
+    if (res.ok) {
+      const data = await res.json();
+      setServices(data);
+    }
+  };
+  useEffect(() => {
+    fetchservice();
+  }, []);
+  useEffect(() => {
+    fetchdata();
+  }, []);
+
+  console.log(mainData)
   return (
-    <div>
-      <div className="flex bg-center bg-no-repeat bg-cover bg-[url('/images/pay-premium/pay-premium.webp')] overflow-hidden text-start justify-start items-center h-64">
+    <section>
+           <div className="flex bg-center bg-no-repeat bg-cover bg-[url('/images/pay-premium/pay-premium.webp')] overflow-hidden text-start justify-start items-center h-64">
         <div className="max-w-screen-xl mx-auto">
           <h1 className="text-gray-900 text-3xl md:text-5xl font-bold">
             Contact Us
           </h1>
         </div>
       </div>
-      <div className="max-w-screen-xl mx-auto  py-[30px] md:py-[60px]">
-      {/* Contact Info Cards */}
-      <div className="flex  flex-col  gap-4 overflow-hidden rounded-lg mb-8">
-        {/* Call Us */}
-        <div className="flex flex-col md:flex-row gap-4 w-full justify-center items-center text-center">
-          <div className="bg-[var(--rv-secondary)] text-white p-8 rounded-2xl shadow-md w-full md:w-1/3 flex flex-col items-center justify-center min-h-[200px]">
-            <Phone className="mb-2" size={24} />
-            <h3 className="text-lg font-medium mb-2">Call Us</h3>
-            <p className="text-sm"><Link href={`tel:${sitedata.mobile}`} >{sitedata.mobile}</Link></p>
-          </div>
-
-          <div className="bg-[var(--rv-secondary)] text-white p-8 rounded-2xl shadow-md w-full md:w-1/3 flex flex-col items-center justify-center min-h-[200px] ">
-            <Mail className="mb-2" size={24} />
-            <h3 className="text-lg font-medium mb-2">Mail Us</h3>
-            <p className="text-sm break-all"><p><Link href={`mailto:${sitedata.email}`} >{sitedata.email}</Link></p></p>
-          </div>
-          <div className="bg-[var(--rv-secondary)] text-white p-8 rounded-2xl shadow-md w-full md:w-1/3 flex flex-col items-center justify-center min-h-[200px]">
-          <MapPin className="mb-2" size={24} />
-          <h3 className="text-lg font-medium mb-2">Reach Us</h3>
-            <p className="text-sm break-all px-3"><a href={`${sitedata.mapurl}`} target="_blank" rel="noopener noreferrer">
-    {sitedata.address}
-  </a></p>
+      <div className={styles.pageContactUs}>
+        <div className="max-w-screen-xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-4">
+            {/* <div>
+              <div className={styles.contactInfoItem}>
+                <div className={styles.contactInfoImg}>
+                  <figure className="image-anime">
+                    <Image
+                      src="/images/contact-info-img-1.jpg"
+                      alt="Contact Info"
+                      width={500}
+                      height={300}
+                    />
+                  </figure>
+                </div>
+                <Link href={`tel:${mainData.mobile}`}>
+                  <div className={styles.contactInfoBody}>
+                    <div className={styles.iconBox}>
+                      <Image
+                        src="/images/icon-phone.svg"
+                        alt="Phone Icon"
+                        width={50}
+                        height={50}
+                      />
+                    </div>
+                    <div className={styles.contactInfoContent}>
+                      <h3>call us any time!</h3>
+                      <p>{mainData?.mobile}</p>
+                      <p>{mainData?.mobile2}</p>
+                    </div>
+                  </div>
+                </Link>
+              </div>
+            </div> */}
+            <div>
+              <div className={styles.contactInfoItem}>
+                <div className={styles.contactInfoImg}>
+                  <figure className="image-anime">
+                    <Image
+                      src="/images/contact-info-img-2.jpg"
+                      alt="Email Info"
+                      width={500}
+                      height={300}
+                    />
+                  </figure>
+                </div>
+                <Link href={`mailto:${mainData.email}`}>
+                  <div className={styles.contactInfoBody}>
+                    <div className={styles.iconBox}>
+                      <Image
+                        src="/images/icon-mail.svg"
+                        alt="Mail Icon"
+                        width={50}
+                        height={50}
+                      />
+                    </div>
+                    <div className={styles.contactInfoContent}>
+                      <h3>send us e-mail</h3>
+                      <p>{mainData?.email}</p>
+                      <p className="mt-2">{mainData?.alternateEmail}</p>
+                      <p className="mt-2">sunilsahu2711@gmail.com</p>
+                    </div>
+                  </div>
+                </Link>
+              </div>
+            </div>
+            <div>
+              <div className={styles.contactInfoItem}>
+                <div className={styles.contactInfoImg}>
+                  <figure className="image-anime">
+                    <Image
+                      src="/images/contact-info-img-1.jpg"
+                      alt="Location Info"
+                      width={500}
+                      height={300}
+                    />
+                  </figure>
+                </div>
+                <a href={mainData.mapurl}>
+                  <div className={styles.contactInfoBody}>
+                    <div className={styles.iconBox}>
+                      <Image
+                        src="/images/icon-location.svg"
+                        alt="Location Icon"
+                        width={50}
+                        height={50}
+                        className="imgicon"
+                      />
+                    </div>
+                    <div className={styles.contactInfoContent}>
+                      <h3>finance office address</h3>
+                      <p>{mainData?.address}</p>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-
-      {/* Reach Us */}
-
-      {/* Map and Contact Form */}
-      <div className="px-2 md:px-15 grid grid-cols-1 md:grid-cols-2">
-        {/* Map */}
-        <div className="w-full h-[500px] relative border border-gray-200 rounded-l">
+      <div className={`${styles.contactFormSection}`}>
+        <div className="max-w-screen-xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 items-center">
+            <div className="col-lg-6">
+              <div className={styles.contactFormImg}>
+                <figure className="image-anime">
+                  <Image
+                    src="/images/contact-us-img.jpg"
+                    alt="Contact Us"
+                    width={600}
+                    height={400}
+                  />
+                </figure>
+              </div>
+            </div>
+            <div className="col-lg-6">
+              <div className="section-title flex flex-col  gap-4 mb-4">
+                <SectionHeading
+                              heading="Contact us"
+                              title="Get In Touch With Us"
+                              align="start"
+                            />
+                <p className="wow fadeInUp" data-wow-delay="0.2s">
+                  Have questions or need assistance? Reach out to us today!
+                  We&apos;re here to provide expert solutions and friendly
+                  support.
+                </p>
+              </div>
+              <div className={styles.contactForm}>
+                <form
+                  id="contactForm"
+                  action="#"
+                  method="POST"
+                  data-toggle="validator"
+                  className="wow fadeInUp"
+                  data-wow-delay="0.4s"
+                  onSubmit={handleSubmit}
+                >
+                  <div className="grid">
+                    <div className="form-group col-md-6 mb-2">
+                      <input
+                        type="text"
+                        name="username"
+                        className={styles.formControl}
+                        placeholder="Full name"
+                        value={formData.username}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+                    <div className="form-group col-md-6 mb-2">
+                      <input
+                        type="text"
+                        name="mobile"
+                        className={styles.formControl}
+                        placeholder="Phone no"
+                        value={formData.mobile}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+                    <div className="form-group col-md-12 mb-2">
+                      <input
+                        type="email"
+                        name="email"
+                        className={styles.formControl}
+                        placeholder="E-mail address"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="form-group col-md-12 ">
+                    <textarea
+                      name="message"
+                      className={styles.formControl}
+                      rows="4"
+                      placeholder="Message"
+                      value={formData.message}
+                      onChange={handleChange}
+                      required
+                    ></textarea>
+                  </div>
+                  <HCaptcha
+          sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+          onVerify={setHcaptchaToken}
+        />
+                  <div className="col-md-12 mt-4">
+                    <button
+                      type="submit"
+                      className="primarybutton"
+                      disabled={loading}
+                    >
+                      {loading ? "Sending..." : "Send Message"}
+                    </button>
+                    {submitted && (
+                      <p className="text-green-600 mt-4">
+                        Thank you! Your message has been sent.
+                      </p>
+                    )}
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className={styles?.googleMap}>
+        <div className={styles?.googleMapIframe}>
           <iframe
-            src={sitedata?.iframe}
-            width="100%"
-            height="100%"
-            style={{ border: 0 }}
-            allowFullScreen={false}
+            src={mainData?.iframe}
+            allowFullScreen
             loading="lazy"
-            className="rounded"
+            referrerPolicy="no-referrer-when-downgrade"
           ></iframe>
         </div>
-
-        {/* Contact Form */}
-        <div className="w-full bg-[var(--rv-secondary)] px-4 rounded-r">
-          <ContactReusableForm sitedata={sitedata} />
-        </div>
       </div>
-    </div>
-    </div>
+    </section>
   );
-}
+};
+
+export default ContactUs;
